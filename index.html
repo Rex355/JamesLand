@@ -35,7 +35,6 @@
             position: relative;
         }
 
-        /* PARTICLE CANVAS BACKGROUND */
         #particleCanvas {
             position: fixed;
             top: 0;
@@ -280,6 +279,31 @@
         }
         .balance { font-size: 2.2rem; color: var(--gold); text-shadow: 0 0 25px var(--gold); font-weight: 700; }
 
+        /* Games toggle buttons */
+        .game-toggle {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .game-toggle button {
+            background: rgba(255,255,255,0.05);
+            box-shadow: none;
+            font-size: 0.85rem;
+            padding: 10px 20px;
+        }
+        .game-toggle button.active-game {
+            background: var(--neon);
+            box-shadow: 0 0 25px var(--neon);
+        }
+
+        /* Make iframe container fill card space */
+        .game-frame {
+            width: 100%;
+            height: 70vh;
+            border: none;
+            border-radius: var(--radius-sm);
+        }
+
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: rgba(0,0,0,0.3); }
         ::-webkit-scrollbar-thumb { background: var(--neon); border-radius: 10px; box-shadow: 0 0 10px var(--neon); }
@@ -335,16 +359,29 @@
             </div>
         </div>
 
-        <!-- Games -->
+        <!-- Games Section (with JamesDash!) -->
         <div id="games" class="section">
             <div class="card">
-                <h3>🎯 Number Guessing</h3>
-                <p>Guess the number (1-100)</p>
-                <input type="number" id="guessInput" placeholder="Your guess" />
-                <button id="guessBtn">Guess</button>
-                <p id="gameHint" style="margin-top:15px; font-weight:bold;"></p>
-                <p>Attempts: <span id="attempts">0</span></p>
-                <button id="newGameBtn" style="background: linear-gradient(135deg, #00ccdd, #0099aa);">New Game</button>
+                <h3>🎮 Games</h3>
+                <div class="game-toggle">
+                    <button id="showNumberGuess" class="active-game">🧠 Number Guess</button>
+                    <button id="showJamesDash">🔷 JamesDash!</button>
+                </div>
+
+                <!-- Number guessing game -->
+                <div id="numberGuessGame">
+                    <p>Guess the number (1-100)</p>
+                    <input type="number" id="guessInput" placeholder="Your guess" />
+                    <button id="guessBtn">Guess</button>
+                    <p id="gameHint" style="margin-top:15px; font-weight:bold;"></p>
+                    <p>Attempts: <span id="attempts">0</span></p>
+                    <button id="newGameBtn" style="background: linear-gradient(135deg, #00ccdd, #0099aa);">New Game</button>
+                </div>
+
+                <!-- JamesDash iframe (hidden by default) -->
+                <div id="jamesDashGame" style="display:none;">
+                    <iframe id="jamesDashFrame" class="game-frame" allow="autoplay; fullscreen"></iframe>
+                </div>
             </div>
         </div>
 
@@ -457,9 +494,7 @@
             resizeCanvas();
 
             class Particle {
-                constructor() {
-                    this.reset();
-                }
+                constructor() { this.reset(); }
                 reset() {
                     this.x = Math.random() * canvas.width;
                     this.y = Math.random() * canvas.height;
@@ -472,9 +507,7 @@
                 update() {
                     this.x += this.vx;
                     this.y += this.vy;
-                    if (this.x < 0 || this.x > canvas.width || this.y < 0 || this.y > canvas.height) {
-                        this.reset();
-                    }
+                    if (this.x < 0 || this.x > canvas.width || this.y < 0 || this.y > canvas.height) this.reset();
                 }
                 draw() {
                     ctx.beginPath();
@@ -485,17 +518,11 @@
                     ctx.fill();
                 }
             }
-
-            for (let i = 0; i < maxParticles; i++) {
-                particles.push(new Particle());
-            }
+            for (let i = 0; i < maxParticles; i++) particles.push(new Particle());
 
             function animate() {
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
-                particles.forEach(p => {
-                    p.update();
-                    p.draw();
-                });
+                particles.forEach(p => { p.update(); p.draw(); });
                 requestAnimationFrame(animate);
             }
             animate();
@@ -556,8 +583,90 @@
                 if (sectionId === 'maps') setTimeout(initMap, 100);
                 if (sectionId === 'users') refreshUserUI();
                 if (sectionId === 'human-chat') updateChatNickInfo();
+                if (sectionId === 'games') {
+                    // Reset game toggles on navigation
+                    document.getElementById('showNumberGuess').classList.add('active-game');
+                    document.getElementById('showJamesDash').classList.remove('active-game');
+                    document.getElementById('numberGuessGame').style.display = 'block';
+                    document.getElementById('jamesDashGame').style.display = 'none';
+                }
             });
         });
+
+        // ==================== GAMES SWITCHER ====================
+        document.getElementById('showNumberGuess').addEventListener('click', () => {
+            document.getElementById('showNumberGuess').classList.add('active-game');
+            document.getElementById('showJamesDash').classList.remove('active-game');
+            document.getElementById('numberGuessGame').style.display = 'block';
+            document.getElementById('jamesDashGame').style.display = 'none';
+        });
+        document.getElementById('showJamesDash').addEventListener('click', () => {
+            document.getElementById('showJamesDash').classList.add('active-game');
+            document.getElementById('showNumberGuess').classList.remove('active-game');
+            document.getElementById('numberGuessGame').style.display = 'none';
+            document.getElementById('jamesDashGame').style.display = 'block';
+            loadJamesDash();
+        });
+
+        function loadJamesDash() {
+            const iframe = document.getElementById('jamesDashFrame');
+            if (iframe.src) return; // already loaded
+            const gameHTML = `
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <base href="https://rawcdn.githack.com/genizy/google-class/main/gdlite/">
+                <meta charset="utf-8">
+                <style>
+                    html, body { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background: #000; }
+                    #gameContainer { width: 100%; height: 100%; }
+                    canvas { width: 100%; height: 100%; display: block; }
+                    #loader {
+                        position: absolute; left: 0; top: 0; width: 100%; height: 100%;
+                        display: flex; flex-direction: column; align-items: center; justify-content: center;
+                        background: linear-gradient(#000, #0066ff);
+                    }
+                    .logo { max-width: 80vw; max-height: 50vh; }
+                    .spinner {
+                        display: none; border-radius: 50%; width: 5em; height: 5em;
+                        border-top: 1.1em solid rgba(255,255,255,0.2);
+                        border-right: 1.1em solid rgba(255,255,255,0.2);
+                        border-bottom: 1.1em solid rgba(255,255,255,0.2);
+                        border-left: 1.1em solid #ffffff;
+                        animation: spin 1.1s infinite linear;
+                    }
+                    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+                </style>
+            </head>
+            <body>
+                <div id="gameContainer"></div>
+                <div id="loader">
+                    <img class="logo" src="image/loading.png">
+                    <div class="spinner"></div>
+                </div>
+                <script src="Build/UnityLoader.js"><\/script>
+                <script>
+                    var gameInstance = UnityLoader.instantiate("gameContainer", "Build/GeometryDashLite.json", {
+                        onProgress: function(gameInstance, progress) {
+                            if (!gameInstance.Module) return;
+                            const loader = document.querySelector("#loader");
+                            if (!gameInstance.progress) {
+                                loader.querySelector(".spinner").style.display = "none";
+                                gameInstance.progress = loader.querySelector(".logo");
+                            }
+                            if (progress === 1 && !gameInstance.removeTimeout) {
+                                gameInstance.removeTimeout = setTimeout(function() {
+                                    loader.style.display = "none";
+                                }, 2000);
+                            }
+                        }
+                    });
+                <\/script>
+            </body>
+            </html>`;
+            const blob = new Blob([gameHTML], { type: 'text/html' });
+            iframe.src = URL.createObjectURL(blob);
+        }
 
         // ==================== AI CHAT ====================
         const chatMessages = document.getElementById('chatMessages');
@@ -658,7 +767,7 @@
         humanMsgInput.addEventListener('keypress', e => { if (e.key === 'Enter') document.getElementById('sendHumanMsg').click(); });
         updateChatNickInfo();
 
-        // ==================== GAMES ====================
+        // ==================== NUMBER GUESSING GAME ====================
         let secretNum = Math.floor(Math.random()*100)+1, attempts = 0;
         document.getElementById('newGameBtn').addEventListener('click', () => {
             secretNum = Math.floor(Math.random()*100)+1; attempts = 0;
@@ -693,10 +802,7 @@
         // ==================== GAMBLING ====================
         const symbols = ['🍒','🍋','🔔','⭐','🍇'];
         document.getElementById('spinBtn').addEventListener('click', () => {
-            if (balance < 10) {
-                document.getElementById('slotResult').textContent = 'Not enough 💎!';
-                return;
-            }
+            if (balance < 10) { document.getElementById('slotResult').textContent = 'Not enough 💎!'; return; }
             balance -= 10;
             const r1 = symbols[Math.floor(Math.random()*symbols.length)];
             const r2 = symbols[Math.floor(Math.random()*symbols.length)];
