@@ -17,7 +17,6 @@
             --text: #eee;
             --text2: #aaa;
             --radius: 20px;
-            --glow: 0 0 20px currentColor;
             --transition: all 0.3s ease;
         }
         * {
@@ -119,8 +118,7 @@
             text-shadow: 0 0 15px var(--neon2);
             letter-spacing: 2px;
         }
-        button,
-        .btn {
+        button {
             background: var(--neon);
             border: none;
             color: #000;
@@ -161,32 +159,6 @@
             align-items: center;
             flex-wrap: wrap;
         }
-        .slot-machine {
-            display: flex;
-            gap: 20px;
-            justify-content: center;
-            font-size: 4rem;
-            margin: 30px 0;
-        }
-        .reel {
-            background: #0f0f1e;
-            padding: 20px 30px;
-            border-radius: 20px;
-            border: 2px solid var(--gold);
-            box-shadow: 0 0 30px gold;
-            min-width: 90px;
-            text-align: center;
-        }
-        .balance {
-            font-size: 2rem;
-            color: var(--gold);
-        }
-        #map {
-            height: 400px;
-            border-radius: var(--radius);
-            margin: 20px 0;
-            border: 2px solid var(--neon2);
-        }
         .chat-box {
             height: 300px;
             overflow-y: auto;
@@ -224,9 +196,49 @@
             background: #2a2a4a;
             border-radius: 15px;
         }
-        .human-msg .nick {
+        .role-badge {
+            font-size: 0.7rem;
+            padding: 2px 8px;
+            border-radius: 12px;
             font-weight: bold;
-            color: var(--neon2);
+            margin-right: 5px;
+            text-transform: uppercase;
+        }
+        .role-Owner {
+            background: gold;
+            color: #000;
+        }
+        .role-Admin {
+            background: #ff3860;
+            color: white;
+        }
+        .role-Mod {
+            background: #00d1b2;
+            color: #000;
+        }
+        .role-User {
+            background: #485fc7;
+            color: white;
+        }
+        .role-Guest {
+            background: #666;
+            color: white;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        th,
+        td {
+            text-align: left;
+            padding: 10px;
+            border-bottom: 1px solid #ffffff20;
+        }
+        .small-btn {
+            padding: 5px 15px;
+            font-size: 0.8rem;
+            margin: 0 3px;
         }
     </style>
 </head>
@@ -247,7 +259,7 @@
     </div>
 
     <div class="main">
-        <!-- AI Chat Section -->
+        <!-- AI Chat -->
         <div id="ai-chat" class="section active">
             <div class="card">
                 <h3>🤖 AI Chat (Pollinations free)</h3>
@@ -261,11 +273,13 @@
             </div>
         </div>
 
-        <!-- Human Chat Section (GUN) -->
+        <!-- Human Chat (GUN) -->
         <div id="human-chat" class="section">
             <div class="card">
-                <h3>💬 Human Chat (decentralized, no server)</h3>
-                <p style="color:#aaa; margin-bottom:10px;">Pick a nickname and start chatting with everyone online!</p>
+                <h3>💬 Human Chat (decentralized)</h3>
+                <p style="color:#aaa; margin-bottom:10px;">
+                    <span id="chatNickInfo"></span>
+                </p>
                 <div class="flex-row">
                     <input type="text" id="nicknameInput" placeholder="Your nickname" style="max-width: 200px;" />
                     <button id="setNickBtn">Set Nick</button>
@@ -278,11 +292,11 @@
             </div>
         </div>
 
-        <!-- Games Section -->
+        <!-- Games -->
         <div id="games" class="section">
             <div class="card">
                 <h3>🎯 Number Guessing Game</h3>
-                <p>I'm thinking of a number between 1 and 100. Can you guess it?</p>
+                <p>I'm thinking of a number between 1 and 100.</p>
                 <input type="number" id="guessInput" placeholder="Your guess" min="1" max="100" />
                 <button id="guessBtn">Guess</button>
                 <p id="gameHint" style="margin-top: 15px; font-weight: bold;"></p>
@@ -291,7 +305,7 @@
             </div>
         </div>
 
-        <!-- Tools Section -->
+        <!-- Tools -->
         <div id="tools" class="section">
             <div class="card">
                 <h3>⏱️ Stopwatch & Word Counter</h3>
@@ -312,7 +326,7 @@
             </div>
         </div>
 
-        <!-- Gambling Section -->
+        <!-- Gambling -->
         <div id="gambling" class="section">
             <div class="card">
                 <h3>🎰 Neon Slots</h3>
@@ -324,11 +338,10 @@
                 </div>
                 <button id="spinBtn">SPIN (10 💎)</button>
                 <p id="slotResult" style="margin-top:15px; font-size:1.4rem;"></p>
-                <p style="color:gray;">🍒🍋🔔⭐🍇  Match 3 = win 50 💎, 2 = 10 💎</p>
             </div>
         </div>
 
-        <!-- Maps Section -->
+        <!-- Maps -->
         <div id="maps" class="section">
             <div class="card">
                 <h3>🗺️ World Map (OpenStreetMap)</h3>
@@ -337,7 +350,7 @@
             </div>
         </div>
 
-        <!-- Calculator Section -->
+        <!-- Calculator -->
         <div id="calc" class="section">
             <div class="card">
                 <h3>🔢 JavaScript Calculator</h3>
@@ -352,10 +365,10 @@
             </div>
         </div>
 
-        <!-- Users Section -->
+        <!-- Users & Roles -->
         <div id="users" class="section">
             <div class="card">
-                <h3>👤 User System (localStorage)</h3>
+                <h3>👤 User System</h3>
                 <div id="userLoggedOut">
                     <h4>Login / Create Account</h4>
                     <input type="text" id="usernameInput" placeholder="Username" />
@@ -364,12 +377,25 @@
                         <button id="loginBtn">Login</button>
                         <button id="createUserBtn">Create Account</button>
                     </div>
+                    <p style="font-size:0.8rem; color:var(--text2);">Default Owner: username "Owner" / password "owner123"</p>
                 </div>
                 <div id="userLoggedIn" style="display:none;">
                     <h4>Welcome, <span id="currentUserDisplay"></span>!</h4>
+                    <p>Your role: <span id="currentUserRole" class="role-badge"></span></p>
                     <button id="logoutBtn" style="background:#ff3860;">Logout</button>
                 </div>
                 <p id="userMsg" style="margin-top:10px; color:var(--neon2);"></p>
+
+                <!-- Admin Panel (only for Owner/Admin) -->
+                <div id="adminPanel" style="display:none; margin-top:30px;">
+                    <h4 style="color:var(--neon2);">👑 User Management</h4>
+                    <table id="userTable">
+                        <thead>
+                            <tr><th>Username</th><th>Role</th><th>Action</th></tr>
+                        </thead>
+                        <tbody id="userTableBody"></tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
@@ -377,7 +403,34 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/gun/gun.js"></script>
     <script>
-        // ---------- NAVIGATION ----------
+        // ==================== ROLE SYSTEM INIT ====================
+        // Pre-create Owner account if not exists
+        function initDefaultOwner() {
+            let users = JSON.parse(localStorage.getItem('users') || '{}');
+            if (!users['Owner']) {
+                users['Owner'] = { password: 'owner123', role: 'Owner' };
+                localStorage.setItem('users', JSON.stringify(users));
+            }
+        }
+        initDefaultOwner();
+
+        function getUsers() {
+            return JSON.parse(localStorage.getItem('users') || '{}');
+        }
+        function saveUsers(users) {
+            localStorage.setItem('users', JSON.stringify(users));
+        }
+        function getCurrentUser() {
+            return localStorage.getItem('currentUser');
+        }
+        function getCurrentUserRole() {
+            const username = getCurrentUser();
+            if (!username) return null;
+            const users = getUsers();
+            return users[username] ? users[username].role : null;
+        }
+
+        // ==================== NAVIGATION ====================
         const sections = document.querySelectorAll('.section');
         const navBtns = document.querySelectorAll('.nav-btn');
         navBtns.forEach(btn => {
@@ -387,12 +440,12 @@
                 const sectionId = btn.dataset.section;
                 sections.forEach(s => s.classList.remove('active'));
                 document.getElementById(sectionId).classList.add('active');
-                // Trigger map init when maps section is activated
                 if (sectionId === 'maps') setTimeout(initMap, 100);
+                if (sectionId === 'users') refreshUserUI();
             });
         });
 
-        // ---------- AI CHAT (Pollinations) ----------
+        // ==================== AI CHAT ====================
         const chatMessages = document.getElementById('chatMessages');
         const chatInput = document.getElementById('chatInput');
         const sendChatBtn = document.getElementById('sendChatBtn');
@@ -426,32 +479,55 @@
         sendChatBtn.addEventListener('click', sendMessage);
         chatInput.addEventListener('keypress', e => { if (e.key === 'Enter') sendMessage(); });
 
-        // ---------- HUMAN CHAT (GUN) ----------
-        // Initialize GUN (decentralized database)
-        const gun = Gun(['https://gun-manhattan.herokuapp.com/gun']); // public relay
+        // ==================== HUMAN CHAT (GUN) ====================
+        const gun = Gun(['https://gun-manhattan.herokuapp.com/gun']);
         const chatNode = gun.get('neon-hub-chat');
 
-        let myNickname = 'Anonymous' + Math.floor(Math.random()*1000);
-        const nicknameInput = document.getElementById('nicknameInput');
+        function getChatNickname() {
+            const currentUser = getCurrentUser();
+            if (currentUser) return currentUser; // force logged-in username
+            const custom = document.getElementById('nicknameInput').value.trim();
+            return custom || 'Guest' + Math.floor(Math.random()*1000);
+        }
+        function getChatRole() {
+            const currentUser = getCurrentUser();
+            if (currentUser) return getCurrentUserRole() || 'User';
+            return 'Guest';
+        }
+
         const humanChatBox = document.getElementById('humanChatBox');
         const humanMsgInput = document.getElementById('humanMsgInput');
-        document.getElementById('setNickBtn').addEventListener('click', () => {
-            const nick = nicknameInput.value.trim();
-            if (nick) {
-                myNickname = nick;
-                alert('Nickname set to: ' + myNickname);
+        const nicknameInput = document.getElementById('nicknameInput');
+        const setNickBtn = document.getElementById('setNickBtn');
+        const chatNickInfo = document.getElementById('chatNickInfo');
+
+        function updateChatNickInfo() {
+            const user = getCurrentUser();
+            if (user) {
+                nicknameInput.disabled = true;
+                nicknameInput.value = user;
+                setNickBtn.disabled = true;
+                chatNickInfo.innerHTML = `Logged in as <strong>${user}</strong> (${getCurrentUserRole()})`;
+            } else {
+                nicknameInput.disabled = false;
+                setNickBtn.disabled = false;
+                chatNickInfo.innerHTML = 'Set a nickname or <a href="#" onclick="document.querySelector(\'[data-section=users]\').click()">log in</a> to show your role.';
             }
+        }
+        setNickBtn.addEventListener('click', () => {
+            if (!getCurrentUser()) updateChatNickInfo();
         });
 
-        // Listen for new messages
+        // Listen for messages
         chatNode.map().on((msg, id) => {
             if (msg && msg.nick && msg.text && msg.timestamp) {
-                // Avoid duplicates (simple check by ID)
                 if (!document.getElementById('msg-' + id)) {
                     const div = document.createElement('div');
                     div.id = 'msg-' + id;
+                    const role = msg.role || 'Guest';
+                    const roleClass = `role-${role}`;
                     div.className = 'human-msg';
-                    div.innerHTML = `<span class="nick">${escapeHtml(msg.nick)}</span>: ${escapeHtml(msg.text)} <small style="color:#888; margin-left:10px;">${new Date(msg.timestamp).toLocaleTimeString()}</small>`;
+                    div.innerHTML = `<span class="role-badge ${roleClass}">${role}</span> <strong>${escapeHtml(msg.nick)}</strong>: ${escapeHtml(msg.text)} <small style="color:#888; margin-left:10px;">${new Date(msg.timestamp).toLocaleTimeString()}</small>`;
                     humanChatBox.appendChild(div);
                     humanChatBox.scrollTop = humanChatBox.scrollHeight;
                 }
@@ -466,11 +542,9 @@
         document.getElementById('sendHumanMsg').addEventListener('click', () => {
             const text = humanMsgInput.value.trim();
             if (!text) return;
-            const message = {
-                nick: myNickname,
-                text: text,
-                timestamp: Date.now()
-            };
+            const nick = getChatNickname();
+            const role = getChatRole();
+            const message = { nick, text, role, timestamp: Date.now() };
             chatNode.set(message);
             humanMsgInput.value = '';
         });
@@ -478,7 +552,11 @@
             if (e.key === 'Enter') document.getElementById('sendHumanMsg').click();
         });
 
-        // ---------- GAMES (Number Guess) ----------
+        // Update info when switching to human chat
+        document.querySelector('[data-section="human-chat"]').addEventListener('click', updateChatNickInfo);
+        updateChatNickInfo();
+
+        // ==================== GAMES ====================
         let secretNum = Math.floor(Math.random() * 100) + 1;
         let attempts = 0;
         document.getElementById('newGameBtn').addEventListener('click', () => {
@@ -508,7 +586,7 @@
             }
         });
 
-        // ---------- TOOLS ----------
+        // ==================== TOOLS ====================
         let timerInterval;
         let timerMilliseconds = 0;
         function updateTimerDisplay() {
@@ -529,7 +607,7 @@
             document.getElementById('charCount').textContent = text.length;
         });
 
-        // ---------- GAMBLING ----------
+        // ==================== GAMBLING ====================
         const symbols = ['🍒', '🍋', '🔔', '⭐', '🍇'];
         let balance = 100;
         document.getElementById('spinBtn').addEventListener('click', () => {
@@ -547,7 +625,7 @@
             document.getElementById('balance').textContent = balance;
         });
 
-        // ---------- MAPS ----------
+        // ==================== MAPS ====================
         let map;
         function initMap() {
             if (map) return;
@@ -558,7 +636,7 @@
             map.on('click', e => L.marker([e.latlng.lat, e.latlng.lng]).addTo(map).bindPopup(`📍 ${e.latlng.lat.toFixed(4)}, ${e.latlng.lng.toFixed(4)}`).openPopup());
         }
 
-        // ---------- CALCULATOR ----------
+        // ==================== CALCULATOR ====================
         let calcDisplay = document.getElementById('calcDisplay');
         let calcExpression = '';
         document.querySelectorAll('.calc-btn').forEach(btn => {
@@ -577,39 +655,122 @@
         });
         document.getElementById('clearCalc').addEventListener('click', () => { calcExpression = ''; calcDisplay.value = '0'; });
 
-        // ---------- USERS (localStorage) ----------
+        // ==================== USER SYSTEM & ROLES ====================
         const userLoggedOut = document.getElementById('userLoggedOut');
         const userLoggedIn = document.getElementById('userLoggedIn');
         const currentUserDisplay = document.getElementById('currentUserDisplay');
+        const currentUserRole = document.getElementById('currentUserRole');
         const userMsg = document.getElementById('userMsg');
-        function checkLogin() {
-            const currentUser = localStorage.getItem('currentUser');
+        const adminPanel = document.getElementById('adminPanel');
+        const userTableBody = document.getElementById('userTableBody');
+
+        function refreshUserUI() {
+            const currentUser = getCurrentUser();
             if (currentUser) {
                 userLoggedOut.style.display = 'none';
                 userLoggedIn.style.display = 'block';
                 currentUserDisplay.textContent = currentUser;
+                const role = getCurrentUserRole();
+                currentUserRole.textContent = role;
+                currentUserRole.className = 'role-badge role-' + role;
+
+                // Show admin panel for Owner/Admin
+                if (role === 'Owner' || role === 'Admin') {
+                    adminPanel.style.display = 'block';
+                    renderUserTable();
+                } else {
+                    adminPanel.style.display = 'none';
+                }
             } else {
                 userLoggedOut.style.display = 'block';
                 userLoggedIn.style.display = 'none';
+                adminPanel.style.display = 'none';
             }
+            updateChatNickInfo();
         }
-        checkLogin();
+
+        function renderUserTable() {
+            const users = getUsers();
+            userTableBody.innerHTML = '';
+            for (const [username, data] of Object.entries(users)) {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${username}</td>
+                    <td><span class="role-badge role-${data.role}">${data.role}</span></td>
+                    <td>
+                        <select class="roleSelect" data-username="${username}">
+                            <option value="User" ${data.role==='User'?'selected':''}>User</option>
+                            <option value="Mod" ${data.role==='Mod'?'selected':''}>Mod</option>
+                            <option value="Admin" ${data.role==='Admin'?'selected':''}>Admin</option>
+                            ${data.role==='Owner' ? '<option value="Owner" selected>Owner</option>' : ''}
+                        </select>
+                        <button class="small-btn changeRoleBtn" data-username="${username}">Save</button>
+                    </td>
+                `;
+                userTableBody.appendChild(row);
+            }
+            document.querySelectorAll('.changeRoleBtn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const username = e.target.dataset.username;
+                    const select = document.querySelector(`select[data-username="${username}"]`);
+                    const newRole = select.value;
+                    changeUserRole(username, newRole);
+                });
+            });
+        }
+
+        function changeUserRole(username, newRole) {
+            const users = getUsers();
+            if (!users[username]) return;
+            // Prevent demoting the last Owner
+            if (users[username].role === 'Owner' && newRole !== 'Owner') {
+                const ownerCount = Object.values(users).filter(u => u.role === 'Owner').length;
+                if (ownerCount <= 1) {
+                    alert('Cannot remove the last Owner.');
+                    return;
+                }
+            }
+            users[username].role = newRole;
+            saveUsers(users);
+            refreshUserUI();
+            userMsg.textContent = `Role of ${username} changed to ${newRole}.`;
+        }
+
         document.getElementById('createUserBtn').addEventListener('click', () => {
             const username = document.getElementById('usernameInput').value.trim();
             const password = document.getElementById('passwordInput').value;
             if (!username || !password) { userMsg.textContent = 'Fill all fields.'; return; }
-            let users = JSON.parse(localStorage.getItem('users') || '{}');
-            if (users[username]) { userMsg.textContent = 'User already exists!'; }
-            else { users[username] = password; localStorage.setItem('users', JSON.stringify(users)); userMsg.textContent = 'Account created!'; }
+            let users = getUsers();
+            if (users[username]) { userMsg.textContent = 'User already exists!'; return; }
+            users[username] = { password, role: 'User' }; // default role
+            saveUsers(users);
+            userMsg.textContent = 'Account created! You can log in.';
+            document.getElementById('usernameInput').value = '';
+            document.getElementById('passwordInput').value = '';
         });
+
         document.getElementById('loginBtn').addEventListener('click', () => {
             const username = document.getElementById('usernameInput').value.trim();
             const password = document.getElementById('passwordInput').value;
-            let users = JSON.parse(localStorage.getItem('users') || '{}');
-            if (users[username] && users[username] === password) { localStorage.setItem('currentUser', username); checkLogin(); userMsg.textContent = ''; }
-            else { userMsg.textContent = 'Invalid credentials.'; }
+            const users = getUsers();
+            if (users[username] && users[username].password === password) {
+                localStorage.setItem('currentUser', username);
+                refreshUserUI();
+                userMsg.textContent = '';
+            } else {
+                userMsg.textContent = 'Invalid credentials.';
+            }
         });
-        document.getElementById('logoutBtn').addEventListener('click', () => { localStorage.removeItem('currentUser'); checkLogin(); });
+
+        document.getElementById('logoutBtn').addEventListener('click', () => {
+            localStorage.removeItem('currentUser');
+            refreshUserUI();
+            document.getElementById('usernameInput').value = '';
+            document.getElementById('passwordInput').value = '';
+        });
+
+        // Initial UI refresh
+        refreshUserUI();
     </script>
 </body>
 </html>
