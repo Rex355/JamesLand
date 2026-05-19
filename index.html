@@ -175,9 +175,6 @@
     <button class="nav-btn" data-section="maps"><span class="icon">🗺️</span> Maps</button>
     <button class="nav-btn" data-section="calc"><span class="icon">🔢</span> Calculator</button>
     <button class="nav-btn" data-section="users"><span class="icon">👤</span> Users</button>
-    <div style="margin-top: auto; font-size: 0.8rem; color: #666; text-align: center;">
-        Free APIs · No keys<br>Pollinations AI · OSM · GUN
-    </div>
 </div>
 
 <div class="main">
@@ -305,8 +302,6 @@
                 <button id="logoutBtn" style="background:#ff3860;">Logout</button>
             </div>
             <p id="userMsg" style="margin-top:10px; color:var(--neon2);"></p>
-
-            <!-- Admin Panel (Owner/Admin) -->
             <div id="adminPanel" style="display:none; margin-top:30px;">
                 <h4 style="color:var(--neon2);">👑 User Management</h4>
                 <table id="userTable">
@@ -321,22 +316,24 @@
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/gun/gun.js"></script>
 <script>
+    // ==================== PERSISTENT GAMBLING BALANCE ====================
+    function loadBalance() {
+        const saved = localStorage.getItem('neonGems');
+        return saved ? parseInt(saved, 10) : 100;
+    }
+    function saveBalance(bal) {
+        localStorage.setItem('neonGems', bal);
+    }
+    let balance = loadBalance();
+    document.getElementById('balance').textContent = balance;
+
     // ==================== ROLE & BAN SYSTEM ====================
-    function getBannedList() {
-        return JSON.parse(localStorage.getItem('bannedUsers') || '[]');
-    }
-    function saveBannedList(list) {
-        localStorage.setItem('bannedUsers', JSON.stringify(list));
-    }
-    function isBanned(username) {
-        return getBannedList().includes(username);
-    }
+    function getBannedList() { return JSON.parse(localStorage.getItem('bannedUsers') || '[]'); }
+    function saveBannedList(list) { localStorage.setItem('bannedUsers', JSON.stringify(list)); }
+    function isBanned(username) { return getBannedList().includes(username); }
     function banUser(username) {
         const banned = getBannedList();
-        if (!banned.includes(username)) {
-            banned.push(username);
-            saveBannedList(banned);
-        }
+        if (!banned.includes(username)) { banned.push(username); saveBannedList(banned); }
     }
     function unbanUser(username) {
         let banned = getBannedList();
@@ -510,26 +507,42 @@
         document.getElementById('charCount').textContent = t.length;
     });
 
-    // ==================== GAMBLING ====================
-    const symbols = ['🍒','🍋','🔔','⭐','🍇']; let balance = 100;
-    document.getElementById('spinBtn').addEventListener('click', ()=>{
-        if(balance<10) return document.getElementById('slotResult').textContent='Not enough 💎!';
-        balance-=10;
-        const r1=symbols[Math.floor(Math.random()*symbols.length)], r2=symbols[Math.floor(Math.random()*symbols.length)], r3=symbols[Math.floor(Math.random()*symbols.length)];
-        document.getElementById('reel1').textContent=r1; document.getElementById('reel2').textContent=r2; document.getElementById('reel3').textContent=r3;
-        if(r1===r2 && r2===r3){ balance+=50; document.getElementById('slotResult').textContent='🎉 JACKPOT! +50 💎'; }
-        else if(r1===r2||r2===r3||r1===r3){ balance+=10; document.getElementById('slotResult').textContent='👍 Two matched! +10 💎'; }
-        else document.getElementById('slotResult').textContent='😿 No match';
-        document.getElementById('balance').textContent=balance;
+    // ==================== GAMBLING (FIXED & PERSISTENT) ====================
+    const symbols = ['🍒','🍋','🔔','⭐','🍇'];
+    document.getElementById('spinBtn').addEventListener('click', () => {
+        if (balance < 10) {
+            document.getElementById('slotResult').textContent = 'Not enough 💎!';
+            return;
+        }
+        balance -= 10;
+        const r1 = symbols[Math.floor(Math.random()*symbols.length)];
+        const r2 = symbols[Math.floor(Math.random()*symbols.length)];
+        const r3 = symbols[Math.floor(Math.random()*symbols.length)];
+        document.getElementById('reel1').textContent = r1;
+        document.getElementById('reel2').textContent = r2;
+        document.getElementById('reel3').textContent = r3;
+
+        if (r1 === r2 && r2 === r3) {
+            balance += 50;
+            document.getElementById('slotResult').textContent = '🎉 JACKPOT! +50 💎';
+        } else if (r1 === r2 || r2 === r3 || r1 === r3) {
+            balance += 10;
+            document.getElementById('slotResult').textContent = '👍 Two matched! +10 💎';
+        } else {
+            document.getElementById('slotResult').textContent = '😿 No match';
+        }
+        // Update display AND save to localStorage
+        document.getElementById('balance').textContent = balance;
+        saveBalance(balance);
     });
 
     // ==================== MAPS ====================
     let map;
     function initMap() {
-        if(map) return;
+        if (map) return;
         map = L.map('map').setView([20,0],2);
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'© OpenStreetMap'}).addTo(map);
-        map.on('click',e=>L.marker([e.latlng.lat,e.latlng.lng]).addTo(map).bindPopup(`📍 ${e.latlng.lat.toFixed(4)}, ${e.latlng.lng.toFixed(4)}`).openPopup());
+        map.on('click', e => L.marker([e.latlng.lat,e.latlng.lng]).addTo(map).bindPopup(`📍 ${e.latlng.lat.toFixed(4)}, ${e.latlng.lng.toFixed(4)}`).openPopup());
     }
 
     // ==================== CALCULATOR ====================
@@ -551,7 +564,6 @@
         const currentUser = getCurrentUser();
         if (currentUser) {
             if (isBanned(currentUser)) {
-                // force logout if banned
                 localStorage.removeItem('currentUser');
                 alert('Your account has been banned.');
                 refreshUserUI();
@@ -608,7 +620,6 @@
             `;
             userTableBody.appendChild(row);
         }
-        // Attach events
         document.querySelectorAll('.changeRoleBtn').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 const username = e.target.dataset.username;
@@ -621,10 +632,7 @@
                 const username = e.target.dataset.username;
                 if (confirm(`Ban ${username}? They will be logged out and cannot log in.`)) {
                     banUser(username);
-                    // force logout if currently online (will be caught on next action)
-                    if (getCurrentUser() === username) {
-                        localStorage.removeItem('currentUser');
-                    }
+                    if (getCurrentUser() === username) localStorage.removeItem('currentUser');
                     refreshUserUI();
                 }
             });
@@ -646,7 +654,6 @@
             alert("You cannot change your own role.");
             return;
         }
-        // Only Owner can assign Owner role
         if (newRole === 'Owner' && getCurrentUserRole() !== 'Owner') {
             alert("Only the Owner can promote to Owner.");
             return;
