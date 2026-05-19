@@ -33,7 +33,6 @@
             min-height: 100vh;
             overflow-x: hidden;
         }
-        /* SIDEBAR */
         .sidebar {
             width: 250px;
             background: var(--surface);
@@ -86,7 +85,6 @@
             width: 30px;
             text-align: center;
         }
-        /* MAIN CONTENT */
         .main {
             flex: 1;
             padding: 30px;
@@ -102,14 +100,8 @@
             display: block;
         }
         @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         .card {
             background: var(--surface);
@@ -169,7 +161,6 @@
             align-items: center;
             flex-wrap: wrap;
         }
-        /* GAMBLING SLOTS */
         .slot-machine {
             display: flex;
             gap: 20px;
@@ -190,14 +181,12 @@
             font-size: 2rem;
             color: var(--gold);
         }
-        /* MAP */
         #map {
             height: 400px;
             border-radius: var(--radius);
             margin: 20px 0;
             border: 2px solid var(--neon2);
         }
-        /* CHAT */
         .chat-box {
             height: 300px;
             overflow-y: auto;
@@ -229,13 +218,23 @@
             background: var(--neon2);
             color: #000;
         }
+        .human-msg {
+            margin: 8px 0;
+            padding: 8px 12px;
+            background: #2a2a4a;
+            border-radius: 15px;
+        }
+        .human-msg .nick {
+            font-weight: bold;
+            color: var(--neon2);
+        }
     </style>
 </head>
 <body>
-    <!-- SIDEBAR -->
     <div class="sidebar">
         <h2>⚡NEON HUB</h2>
-        <button class="nav-btn active" data-section="chat"><span class="icon">💬</span> AI Chat</button>
+        <button class="nav-btn active" data-section="ai-chat"><span class="icon">🤖</span> AI Chat</button>
+        <button class="nav-btn" data-section="human-chat"><span class="icon">💬</span> Human Chat</button>
         <button class="nav-btn" data-section="games"><span class="icon">🎮</span> Games</button>
         <button class="nav-btn" data-section="tools"><span class="icon">🛠️</span> Tools</button>
         <button class="nav-btn" data-section="gambling"><span class="icon">🎰</span> Gambling</button>
@@ -243,14 +242,13 @@
         <button class="nav-btn" data-section="calc"><span class="icon">🔢</span> Calculator</button>
         <button class="nav-btn" data-section="users"><span class="icon">👤</span> Users</button>
         <div style="margin-top: auto; font-size: 0.8rem; color: #666; text-align: center;">
-            Free APIs · No keys<br>Pollinations AI · OSM
+            Free APIs · No keys<br>Pollinations AI · OSM · GUN
         </div>
     </div>
 
-    <!-- MAIN CONTENT -->
     <div class="main">
-        <!-- CHAT SECTION -->
-        <div id="chat" class="section active">
+        <!-- AI Chat Section -->
+        <div id="ai-chat" class="section active">
             <div class="card">
                 <h3>🤖 AI Chat (Pollinations free)</h3>
                 <div class="chat-box" id="chatMessages">
@@ -263,7 +261,24 @@
             </div>
         </div>
 
-        <!-- GAMES SECTION -->
+        <!-- Human Chat Section (GUN) -->
+        <div id="human-chat" class="section">
+            <div class="card">
+                <h3>💬 Human Chat (decentralized, no server)</h3>
+                <p style="color:#aaa; margin-bottom:10px;">Pick a nickname and start chatting with everyone online!</p>
+                <div class="flex-row">
+                    <input type="text" id="nicknameInput" placeholder="Your nickname" style="max-width: 200px;" />
+                    <button id="setNickBtn">Set Nick</button>
+                </div>
+                <div class="chat-box" id="humanChatBox"></div>
+                <div class="flex-row">
+                    <input type="text" id="humanMsgInput" placeholder="Type a message..." />
+                    <button id="sendHumanMsg">Send</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Games Section -->
         <div id="games" class="section">
             <div class="card">
                 <h3>🎯 Number Guessing Game</h3>
@@ -276,7 +291,7 @@
             </div>
         </div>
 
-        <!-- TOOLS SECTION -->
+        <!-- Tools Section -->
         <div id="tools" class="section">
             <div class="card">
                 <h3>⏱️ Stopwatch & Word Counter</h3>
@@ -297,7 +312,7 @@
             </div>
         </div>
 
-        <!-- GAMBLING SECTION -->
+        <!-- Gambling Section -->
         <div id="gambling" class="section">
             <div class="card">
                 <h3>🎰 Neon Slots</h3>
@@ -313,7 +328,7 @@
             </div>
         </div>
 
-        <!-- MAPS SECTION -->
+        <!-- Maps Section -->
         <div id="maps" class="section">
             <div class="card">
                 <h3>🗺️ World Map (OpenStreetMap)</h3>
@@ -322,7 +337,7 @@
             </div>
         </div>
 
-        <!-- CALCULATOR SECTION -->
+        <!-- Calculator Section -->
         <div id="calc" class="section">
             <div class="card">
                 <h3>🔢 JavaScript Calculator</h3>
@@ -337,7 +352,7 @@
             </div>
         </div>
 
-        <!-- USERS SECTION -->
+        <!-- Users Section -->
         <div id="users" class="section">
             <div class="card">
                 <h3>👤 User System (localStorage)</h3>
@@ -360,6 +375,7 @@
     </div>
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gun/gun.js"></script>
     <script>
         // ---------- NAVIGATION ----------
         const sections = document.querySelectorAll('.section');
@@ -371,14 +387,15 @@
                 const sectionId = btn.dataset.section;
                 sections.forEach(s => s.classList.remove('active'));
                 document.getElementById(sectionId).classList.add('active');
+                // Trigger map init when maps section is activated
+                if (sectionId === 'maps') setTimeout(initMap, 100);
             });
         });
 
-        // ---------- AI CHAT (Pollinations free API) ----------
+        // ---------- AI CHAT (Pollinations) ----------
         const chatMessages = document.getElementById('chatMessages');
         const chatInput = document.getElementById('chatInput');
         const sendChatBtn = document.getElementById('sendChatBtn');
-
         async function sendMessage() {
             const text = chatInput.value.trim();
             if (!text) return;
@@ -389,17 +406,14 @@
                 const response = await fetch('https://text.pollinations.ai/', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        messages: [{ role: 'user', content: text }]
-                    })
+                    body: JSON.stringify({ messages: [{ role: 'user', content: text }] })
                 });
-                const data = await response.text(); // returns plain text
-                // Remove "Thinking..." message
+                const data = await response.text();
                 chatMessages.lastChild.remove();
                 appendMessage('ai', data || 'Sorry, no response.');
             } catch (e) {
                 chatMessages.lastChild.remove();
-                appendMessage('ai', 'Error: Could not reach AI. Check connection.');
+                appendMessage('ai', 'Error: Could not reach AI.');
             }
         }
         function appendMessage(role, content) {
@@ -411,6 +425,58 @@
         }
         sendChatBtn.addEventListener('click', sendMessage);
         chatInput.addEventListener('keypress', e => { if (e.key === 'Enter') sendMessage(); });
+
+        // ---------- HUMAN CHAT (GUN) ----------
+        // Initialize GUN (decentralized database)
+        const gun = Gun(['https://gun-manhattan.herokuapp.com/gun']); // public relay
+        const chatNode = gun.get('neon-hub-chat');
+
+        let myNickname = 'Anonymous' + Math.floor(Math.random()*1000);
+        const nicknameInput = document.getElementById('nicknameInput');
+        const humanChatBox = document.getElementById('humanChatBox');
+        const humanMsgInput = document.getElementById('humanMsgInput');
+        document.getElementById('setNickBtn').addEventListener('click', () => {
+            const nick = nicknameInput.value.trim();
+            if (nick) {
+                myNickname = nick;
+                alert('Nickname set to: ' + myNickname);
+            }
+        });
+
+        // Listen for new messages
+        chatNode.map().on((msg, id) => {
+            if (msg && msg.nick && msg.text && msg.timestamp) {
+                // Avoid duplicates (simple check by ID)
+                if (!document.getElementById('msg-' + id)) {
+                    const div = document.createElement('div');
+                    div.id = 'msg-' + id;
+                    div.className = 'human-msg';
+                    div.innerHTML = `<span class="nick">${escapeHtml(msg.nick)}</span>: ${escapeHtml(msg.text)} <small style="color:#888; margin-left:10px;">${new Date(msg.timestamp).toLocaleTimeString()}</small>`;
+                    humanChatBox.appendChild(div);
+                    humanChatBox.scrollTop = humanChatBox.scrollHeight;
+                }
+            }
+        });
+
+        function escapeHtml(text) {
+            const map = {'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;'};
+            return text.replace(/[&<>"']/g, m => map[m]);
+        }
+
+        document.getElementById('sendHumanMsg').addEventListener('click', () => {
+            const text = humanMsgInput.value.trim();
+            if (!text) return;
+            const message = {
+                nick: myNickname,
+                text: text,
+                timestamp: Date.now()
+            };
+            chatNode.set(message);
+            humanMsgInput.value = '';
+        });
+        humanMsgInput.addEventListener('keypress', e => {
+            if (e.key === 'Enter') document.getElementById('sendHumanMsg').click();
+        });
 
         // ---------- GAMES (Number Guess) ----------
         let secretNum = Math.floor(Math.random() * 100) + 1;
@@ -442,7 +508,7 @@
             }
         });
 
-        // ---------- TOOLS (Stopwatch & Counter) ----------
+        // ---------- TOOLS ----------
         let timerInterval;
         let timerMilliseconds = 0;
         function updateTimerDisplay() {
@@ -453,55 +519,35 @@
                 `${String(mins).padStart(2,'0')}:${String(secs).padStart(2,'0')}.${String(hundredths).padStart(2,'0')}`;
         }
         document.getElementById('startTimer').addEventListener('click', () => {
-            if (!timerInterval) {
-                timerInterval = setInterval(() => { timerMilliseconds++; updateTimerDisplay(); }, 10);
-            }
+            if (!timerInterval) timerInterval = setInterval(() => { timerMilliseconds++; updateTimerDisplay(); }, 10);
         });
-        document.getElementById('pauseTimer').addEventListener('click', () => {
-            clearInterval(timerInterval);
-            timerInterval = null;
-        });
-        document.getElementById('resetTimer').addEventListener('click', () => {
-            clearInterval(timerInterval);
-            timerInterval = null;
-            timerMilliseconds = 0;
-            updateTimerDisplay();
-        });
+        document.getElementById('pauseTimer').addEventListener('click', () => { clearInterval(timerInterval); timerInterval = null; });
+        document.getElementById('resetTimer').addEventListener('click', () => { clearInterval(timerInterval); timerInterval = null; timerMilliseconds = 0; updateTimerDisplay(); });
         document.getElementById('textCounter').addEventListener('input', function() {
             const text = this.value;
             document.getElementById('wordCount').textContent = text.trim() ? text.trim().split(/\s+/).length : 0;
             document.getElementById('charCount').textContent = text.length;
         });
 
-        // ---------- GAMBLING (Slots) ----------
+        // ---------- GAMBLING ----------
         const symbols = ['🍒', '🍋', '🔔', '⭐', '🍇'];
         let balance = 100;
         document.getElementById('spinBtn').addEventListener('click', () => {
-            if (balance < 10) {
-                document.getElementById('slotResult').textContent = 'Not enough 💎!';
-                return;
-            }
+            if (balance < 10) { document.getElementById('slotResult').textContent = 'Not enough 💎!'; return; }
             balance -= 10;
-            document.getElementById('balance').textContent = balance;
-            const r1 = symbols[Math.floor(Math.random() * symbols.length)];
-            const r2 = symbols[Math.floor(Math.random() * symbols.length)];
-            const r3 = symbols[Math.floor(Math.random() * symbols.length)];
+            const r1 = symbols[Math.floor(Math.random()*symbols.length)];
+            const r2 = symbols[Math.floor(Math.random()*symbols.length)];
+            const r3 = symbols[Math.floor(Math.random()*symbols.length)];
             document.getElementById('reel1').textContent = r1;
             document.getElementById('reel2').textContent = r2;
             document.getElementById('reel3').textContent = r3;
-            if (r1 === r2 && r2 === r3) {
-                balance += 50;
-                document.getElementById('slotResult').textContent = '🎉 JACKPOT! +50 💎';
-            } else if (r1 === r2 || r2 === r3 || r1 === r3) {
-                balance += 10;
-                document.getElementById('slotResult').textContent = '👍 Two matched! +10 💎';
-            } else {
-                document.getElementById('slotResult').textContent = '😿 No match';
-            }
+            if (r1===r2 && r2===r3) { balance += 50; document.getElementById('slotResult').textContent = '🎉 JACKPOT! +50 💎'; }
+            else if (r1===r2 || r2===r3 || r1===r3) { balance += 10; document.getElementById('slotResult').textContent = '👍 Two matched! +10 💎'; }
+            else { document.getElementById('slotResult').textContent = '😿 No match'; }
             document.getElementById('balance').textContent = balance;
         });
 
-        // ---------- MAPS (Leaflet) ----------
+        // ---------- MAPS ----------
         let map;
         function initMap() {
             if (map) return;
@@ -509,14 +555,8 @@
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 attribution: '© OpenStreetMap contributors'
             }).addTo(map);
-            map.on('click', function(e) {
-                L.marker([e.latlng.lat, e.latlng.lng]).addTo(map)
-                    .bindPopup(`📍 ${e.latlng.lat.toFixed(4)}, ${e.latlng.lng.toFixed(4)}`).openPopup();
-            });
+            map.on('click', e => L.marker([e.latlng.lat, e.latlng.lng]).addTo(map).bindPopup(`📍 ${e.latlng.lat.toFixed(4)}, ${e.latlng.lng.toFixed(4)}`).openPopup());
         }
-        // Initialize map when maps section becomes visible (observer or just on click)
-        document.querySelector('[data-section="maps"]').addEventListener('click', initMap);
-        // Also try to init when page loads if maps already active? Just use lazy init.
 
         // ---------- CALCULATOR ----------
         let calcDisplay = document.getElementById('calcDisplay');
@@ -525,31 +565,23 @@
             btn.addEventListener('click', function() {
                 const val = this.textContent;
                 if (val === '=') {
-                    try {
-                        calcExpression = eval(calcExpression).toString();
-                    } catch { calcExpression = 'Error'; }
+                    try { calcExpression = eval(calcExpression).toString(); } catch { calcExpression = 'Error'; }
                     calcDisplay.value = calcExpression;
-                } else if (val === 'C') {
-                    calcExpression = '';
-                    calcDisplay.value = '0';
-                } else {
+                } else if (val === 'C') { calcExpression = ''; calcDisplay.value = '0'; }
+                else {
                     if (calcDisplay.value === '0' || calcDisplay.value === 'Error') calcExpression = '';
                     calcExpression += val;
                     calcDisplay.value = calcExpression;
                 }
             });
         });
-        document.getElementById('clearCalc').addEventListener('click', () => {
-            calcExpression = '';
-            calcDisplay.value = '0';
-        });
+        document.getElementById('clearCalc').addEventListener('click', () => { calcExpression = ''; calcDisplay.value = '0'; });
 
         // ---------- USERS (localStorage) ----------
         const userLoggedOut = document.getElementById('userLoggedOut');
         const userLoggedIn = document.getElementById('userLoggedIn');
         const currentUserDisplay = document.getElementById('currentUserDisplay');
         const userMsg = document.getElementById('userMsg');
-
         function checkLogin() {
             const currentUser = localStorage.getItem('currentUser');
             if (currentUser) {
@@ -562,49 +594,22 @@
             }
         }
         checkLogin();
-
         document.getElementById('createUserBtn').addEventListener('click', () => {
             const username = document.getElementById('usernameInput').value.trim();
             const password = document.getElementById('passwordInput').value;
-            if (!username || !password) {
-                userMsg.textContent = 'Fill all fields.';
-                return;
-            }
+            if (!username || !password) { userMsg.textContent = 'Fill all fields.'; return; }
             let users = JSON.parse(localStorage.getItem('users') || '{}');
-            if (users[username]) {
-                userMsg.textContent = 'User already exists!';
-            } else {
-                users[username] = password;
-                localStorage.setItem('users', JSON.stringify(users));
-                userMsg.textContent = 'Account created! You can log in.';
-            }
+            if (users[username]) { userMsg.textContent = 'User already exists!'; }
+            else { users[username] = password; localStorage.setItem('users', JSON.stringify(users)); userMsg.textContent = 'Account created!'; }
         });
-
         document.getElementById('loginBtn').addEventListener('click', () => {
             const username = document.getElementById('usernameInput').value.trim();
             const password = document.getElementById('passwordInput').value;
             let users = JSON.parse(localStorage.getItem('users') || '{}');
-            if (users[username] && users[username] === password) {
-                localStorage.setItem('currentUser', username);
-                checkLogin();
-                userMsg.textContent = '';
-            } else {
-                userMsg.textContent = 'Invalid credentials.';
-            }
+            if (users[username] && users[username] === password) { localStorage.setItem('currentUser', username); checkLogin(); userMsg.textContent = ''; }
+            else { userMsg.textContent = 'Invalid credentials.'; }
         });
-
-        document.getElementById('logoutBtn').addEventListener('click', () => {
-            localStorage.removeItem('currentUser');
-            checkLogin();
-            document.getElementById('usernameInput').value = '';
-            document.getElementById('passwordInput').value = '';
-        });
-
-        // Map init trigger if maps section is clicked (lazy)
-        document.querySelector('[data-section="maps"]').addEventListener('click', function() {
-            setTimeout(initMap, 100); // ensure DOM visible
-        });
-        // Pre-initialize map after a short delay if maps is active (first load chat active, so ignore)
+        document.getElementById('logoutBtn').addEventListener('click', () => { localStorage.removeItem('currentUser'); checkLogin(); });
     </script>
 </body>
 </html>
