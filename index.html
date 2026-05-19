@@ -588,13 +588,14 @@
             });
         });
 
-        // ==================== GAMES SWITCHER ====================
+        // ==================== GAMES SWITCHER (with focus fix) ====================
         document.getElementById('showNumberGuess').addEventListener('click', () => {
             document.getElementById('showNumberGuess').classList.add('active-game');
             document.getElementById('showJamesDash').classList.remove('active-game');
             document.getElementById('numberGuessGame').style.display = 'block';
             document.getElementById('jamesDashGame').style.display = 'none';
         });
+
         document.getElementById('showJamesDash').addEventListener('click', () => {
             document.getElementById('showJamesDash').classList.add('active-game');
             document.getElementById('showNumberGuess').classList.remove('active-game');
@@ -605,7 +606,11 @@
 
         function loadJamesDash() {
             const iframe = document.getElementById('jamesDashFrame');
-            if (iframe.src) return;
+            if (iframe.src) {
+                // Already loaded, just focus to eliminate input delay
+                iframe.focus();
+                return;
+            }
             const gameHTML = `
             <!DOCTYPE html>
             <html>
@@ -661,6 +666,11 @@
             </html>`;
             const blob = new Blob([gameHTML], { type: 'text/html' });
             iframe.src = URL.createObjectURL(blob);
+            // Focus the iframe as soon as it loads, so keyboard input works instantly
+            iframe.onload = () => {
+                iframe.focus();
+                iframe.onload = null; // only need to focus once
+            };
         }
 
         // ==================== AI CHAT ====================
