@@ -377,7 +377,6 @@
                     <h4>Login / Create Account</h4>
                     <input type="text" id="usernameInput" placeholder="Username"><input type="password" id="passwordInput" placeholder="Password">
                     <div class="flex-row"><button id="loginBtn">Login</button><button id="createUserBtn">Create</button></div>
-                    <p style="font-size:0.8rem;color:var(--text2);">Default Owner: <b>submissive femboy</b> / owner123</p>
                 </div>
                 <div id="userLoggedIn" style="display:none;">
                     <h4>Welcome, <span id="currentUserDisplay"></span>!</h4>
@@ -436,7 +435,7 @@
             navs.forEach(x=>x.classList.remove('active'));b.classList.add('active');
             let id=b.dataset.section;secs.forEach(s=>s.classList.remove('active'));
             document.getElementById(id).classList.add('active');
-            if(id==='maps')setTimeout(initMap,100);
+            if(id==='maps')setTimeout(()=>{initMap();if(map)map.invalidateSize();},150);
             if(id==='users')refUI();
             if(id==='human-chat')upNick();
             if(id==='games'){document.getElementById('showNumberGuess').classList.add('active-game');document.getElementById('showJamesDash').classList.remove('active-game');document.getElementById('showJamesTag').classList.remove('active-game');document.getElementById('numberGuessGame').style.display='block';document.getElementById('jamesDashGame').style.display='none';document.getElementById('jamesTagGame').style.display='none';}
@@ -463,10 +462,11 @@
         const chatMsgs=document.getElementById('chatMessages'),chatIn=document.getElementById('chatInput'),sendBtn=document.getElementById('sendChatBtn');
         function sendAI(){
             let t=chatIn.value.trim();if(!t)return;
-            appMsg('user',t);chatIn.value='';appMsg('ai','Thinking...');
-            fetch('https://text.pollinations.ai/',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages:[{role:'user',content:t}]})})
-            .then(r=>r.text()).then(d=>{chatMsgs.lastChild.remove();appMsg('ai',d||'Sorry, no response.');})
-            .catch(()=>{chatMsgs.lastChild.remove();appMsg('ai','Error.');});
+            appMsg('user',t);chatIn.value='';
+            let thinkingEl=document.createElement('div');thinkingEl.className='msg ai';thinkingEl.innerHTML='<span>Thinking...</span>';chatMsgs.appendChild(thinkingEl);chatMsgs.scrollTop=chatMsgs.scrollHeight;
+            fetch('https://text.pollinations.ai/openai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'openai',messages:[{role:'user',content:t}]})})
+            .then(r=>r.json()).then(d=>{thinkingEl.remove();let reply=(d.choices&&d.choices[0]&&d.choices[0].message&&d.choices[0].message.content)||'Sorry, no response.';appMsg('ai',reply);})
+            .catch(()=>{thinkingEl.remove();appMsg('ai','Error connecting to AI. Please try again.');});
         }
         function appMsg(role,content){let d=document.createElement('div');d.className='msg '+role;d.innerHTML='<span>'+content+'</span>';chatMsgs.appendChild(d);chatMsgs.scrollTop=chatMsgs.scrollHeight;}
         sendBtn.addEventListener('click',sendAI);
@@ -477,7 +477,7 @@
         function getRole(){let u=getCur();if(u)return getCurRole()||'User';return'Guest';}
         const hBox=document.getElementById('humanChatBox'),hIn=document.getElementById('humanMsgInput'),nIn=document.getElementById('nicknameInput'),sNick=document.getElementById('setNickBtn'),nInfo=document.getElementById('chatNickInfo');
         function upNick(){let u=getCur();if(u){nIn.disabled=true;nIn.value=u;sNick.disabled=true;let r=getCurRole();nInfo.innerHTML='Logged in as <strong>'+u+'</strong> (<span class="role-badge role-'+r+'">'+r+'</span>)';}else{nIn.disabled=false;sNick.disabled=false;nInfo.innerHTML='Set a nickname or <a href="#" onclick="document.querySelector(\'[data-section=users]\').click()">log in</a> to show your role.';}}
-        sNick.addEventListener('click',upNick);
+        sNick.addEventListener('click',()=>{let n=nIn.value.trim();if(n)nInfo.innerHTML='Nickname set to <strong>'+esc(n)+'</strong>';upNick();});
         chatNode.map().on((msg,id)=>{if(msg&&msg.nick&&msg.text&&msg.timestamp){if(!document.getElementById('msg-'+id)){let d=document.createElement('div');d.id='msg-'+id;let r=msg.role||'Guest';d.className='human-msg';d.innerHTML='<span class="role-badge role-'+r+'">'+r+'</span> <strong>'+esc(msg.nick)+'</strong>: '+esc(msg.text)+' <small style="color:#888;">'+new Date(msg.timestamp).toLocaleTimeString()+'</small>';hBox.appendChild(d);hBox.scrollTop=hBox.scrollHeight;}}});
         function esc(t){return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;');}
         function sendH(){let t=hIn.value.trim();if(!t)return;let n=getNick(),r=getRole();chatNode.set({nick:n,text:t,role:r,timestamp:Date.now()});hIn.value='';}
@@ -503,7 +503,7 @@
         function initMap(){if(map)return;map=L.map('map').setView([20,0],2);L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'© OpenStreetMap'}).addTo(map);map.on('click',e=>L.marker([e.latlng.lat,e.latlng.lng]).addTo(map).bindPopup('📍 '+e.latlng.lat.toFixed(4)+', '+e.latlng.lng.toFixed(4)).openPopup());}
 
         let cd=document.getElementById('calcDisplay'),ce='';
-        document.querySelectorAll('.calc-btn').forEach(b=>b.addEventListener('click',function(){let v=this.textContent;if(v==='='){try{ce=eval(ce).toString();}catch{ce='Error';}cd.value=ce;}else if(v==='C'){ce='';cd.value='0';}else{if(cd.value==='0'||cd.value==='Error')ce='';ce+=v;cd.value=ce;}}));
+        document.querySelectorAll('.calc-btn').forEach(b=>b.addEventListener('click',function(){let v=this.textContent;if(v==='='){try{let res=Function('"use strict";return ('+ce+')')();ce=isFinite(res)?String(res):'Error';}catch{ce='Error';}cd.value=ce||'0';}else if(v==='C'){ce='';cd.value='0';}else{if(cd.value==='0'||cd.value==='Error')ce='';ce+=v;cd.value=ce;}}));
         document.getElementById('clearCalc').addEventListener('click',()=>{ce='';cd.value='0';});
 
         const lo=document.getElementById('userLoggedOut'),li=document.getElementById('userLoggedIn'),cud=document.getElementById('currentUserDisplay'),cur=document.getElementById('currentUserRole'),um=document.getElementById('userMsg'),ap=document.getElementById('adminPanel'),utb=document.getElementById('userTableBody');
