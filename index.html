@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>⚡ Neon Hub · AI · Chat · Games · Gambling · Maps · Users</title>
+    <title>⚡ James Land · AI · Chat · Games · Gambling · Maps · Users</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <style>
         :root {
@@ -61,10 +61,10 @@
             top: 0;
             height: 100vh;
         }
-        .sidebar h2 {
-            font-size: 2rem;
+        .sidebar .logo-text {
+            font-size: 2.4rem;
             text-align: center;
-            letter-spacing: 4px;
+            letter-spacing: 6px;
             background: linear-gradient(135deg, var(--neon), var(--neon2));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -72,6 +72,8 @@
             font-weight: 900;
             filter: drop-shadow(0 0 25px var(--neon));
             animation: titlePulse 2s infinite alternate;
+            text-transform: uppercase;
+            font-family: 'Arial Black', 'Impact', sans-serif;
         }
         @keyframes titlePulse {
             from { filter: drop-shadow(0 0 20px var(--neon)); }
@@ -311,7 +313,7 @@
     <canvas id="particleCanvas"></canvas>
 
     <div class="sidebar">
-        <h2>⚡NEON HUB</h2>
+        <div class="logo-text">⚡JAMES LAND</div>
         <button class="nav-btn active" data-section="ai-chat"><span class="icon">🤖</span> AI Chat</button>
         <button class="nav-btn" data-section="human-chat"><span class="icon">💬</span> Human Chat</button>
         <button class="nav-btn" data-section="games"><span class="icon">🎮</span> Games</button>
@@ -357,7 +359,7 @@
             </div>
         </div>
 
-        <!-- Games Section (with JamesDash! and James Tag) -->
+        <!-- Games Section -->
         <div id="games" class="section">
             <div class="card">
                 <h3>🎮 Games</h3>
@@ -528,16 +530,16 @@
 
         // ==================== PERSISTENT GAMBLING BALANCE ====================
         function loadBalance() {
-            const saved = localStorage.getItem('neonGems');
+            const saved = localStorage.getItem('jamesLandGems');
             return saved ? parseInt(saved, 10) : 100;
         }
-        function saveBalance(bal) { localStorage.setItem('neonGems', bal); }
+        function saveBalance(bal) { localStorage.setItem('jamesLandGems', bal); }
         let balance = loadBalance();
         document.getElementById('balance').textContent = balance;
 
         // ==================== ROLE & BAN SYSTEM ====================
-        function getBannedList() { return JSON.parse(localStorage.getItem('bannedUsers') || '[]'); }
-        function saveBannedList(list) { localStorage.setItem('bannedUsers', JSON.stringify(list)); }
+        function getBannedList() { return JSON.parse(localStorage.getItem('jamesLandBanned') || '[]'); }
+        function saveBannedList(list) { localStorage.setItem('jamesLandBanned', JSON.stringify(list)); }
         function isBanned(username) { return getBannedList().includes(username); }
         function banUser(username) {
             const banned = getBannedList();
@@ -550,17 +552,17 @@
         }
 
         function initDefaultOwner() {
-            let users = JSON.parse(localStorage.getItem('users') || '{}');
+            let users = JSON.parse(localStorage.getItem('jamesLandUsers') || '{}');
             if (!users['submissive femboy']) {
                 users['submissive femboy'] = { password: 'owner123', role: 'Owner' };
-                localStorage.setItem('users', JSON.stringify(users));
+                localStorage.setItem('jamesLandUsers', JSON.stringify(users));
             }
         }
         initDefaultOwner();
 
-        function getUsers() { return JSON.parse(localStorage.getItem('users') || '{}'); }
-        function saveUsers(users) { localStorage.setItem('users', JSON.stringify(users)); }
-        function getCurrentUser() { return localStorage.getItem('currentUser'); }
+        function getUsers() { return JSON.parse(localStorage.getItem('jamesLandUsers') || '{}'); }
+        function saveUsers(users) { localStorage.setItem('jamesLandUsers', JSON.stringify(users)); }
+        function getCurrentUser() { return localStorage.getItem('jamesLandCurrentUser'); }
         function getCurrentUserRole() {
             const username = getCurrentUser();
             if (!username) return null;
@@ -592,7 +594,7 @@
             });
         });
 
-        // ==================== GAMES SWITCHER (with focus fix) ====================
+        // ==================== GAMES SWITCHER ====================
         document.getElementById('showNumberGuess').addEventListener('click', () => {
             setActiveGameButton('showNumberGuess');
             document.getElementById('numberGuessGame').style.display = 'block';
@@ -882,7 +884,7 @@
 
         // ==================== HUMAN CHAT (GUN) ====================
         const gun = Gun(['https://gun-manhattan.herokuapp.com/gun']);
-        const chatNode = gun.get('neon-hub-chat');
+        const chatNode = gun.get('james-land-chat');
 
         function getChatNickname() {
             const currentUser = getCurrentUser();
@@ -1031,7 +1033,7 @@
             const currentUser = getCurrentUser();
             if (currentUser) {
                 if (isBanned(currentUser)) {
-                    localStorage.removeItem('currentUser');
+                    localStorage.removeItem('jamesLandCurrentUser');
                     alert('Your account has been banned.');
                     refreshUserUI();
                     return;
@@ -1093,7 +1095,7 @@
             }));
             document.querySelectorAll('.banBtn').forEach(btn => btn.addEventListener('click', (e) => {
                 const username = e.target.dataset.username;
-                if(confirm(`Ban ${username}?`)) { banUser(username); if(getCurrentUser()===username) localStorage.removeItem('currentUser'); refreshUserUI(); }
+                if(confirm(`Ban ${username}?`)) { banUser(username); if(getCurrentUser()===username) localStorage.removeItem('jamesLandCurrentUser'); refreshUserUI(); }
             }));
             document.querySelectorAll('.unbanBtn').forEach(btn => btn.addEventListener('click', (e) => {
                 unbanUser(e.target.dataset.username); refreshUserUI();
@@ -1124,10 +1126,10 @@
             const p = document.getElementById('passwordInput').value;
             if(isBanned(u)) return userMsg.textContent='Banned.';
             const users = getUsers();
-            if(users[u] && users[u].password===p) { localStorage.setItem('currentUser',u); refreshUserUI(); userMsg.textContent=''; }
+            if(users[u] && users[u].password===p) { localStorage.setItem('jamesLandCurrentUser',u); refreshUserUI(); userMsg.textContent=''; }
             else userMsg.textContent='Invalid credentials.';
         });
-        document.getElementById('logoutBtn').addEventListener('click', ()=>{ localStorage.removeItem('currentUser'); refreshUserUI(); });
+        document.getElementById('logoutBtn').addEventListener('click', ()=>{ localStorage.removeItem('jamesLandCurrentUser'); refreshUserUI(); });
         refreshUserUI();
     </script>
 </body>
