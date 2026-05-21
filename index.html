@@ -424,6 +424,22 @@
             display: inline-block;
             margin-top: 12px;
         }
+        .game-controls {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            margin-top: 12px;
+            flex-wrap: wrap;
+        }
+        .game-controls a {
+            color: var(--neon2);
+            font-weight: bold;
+            text-decoration: none;
+            border-bottom: 1px dashed;
+        }
+        .game-controls a:hover {
+            text-shadow: 0 0 8px var(--neon2);
+        }
         ::-webkit-scrollbar {
             width: 8px;
         }
@@ -504,19 +520,31 @@
                 </div>
                 <div id="jamesDashGame" style="display:none;">
                     <iframe id="jamesDashFrame" class="game-frame" allow="autoplay;fullscreen;accelerometer;gyroscope;xr-spatial-tracking" allowfullscreen title="James Dash"></iframe>
-                    <button class="fullscreen-btn" onclick="toggleFullscreen('jamesDashFrame')">⛶ Fullscreen</button>
+                    <div class="game-controls">
+                        <button class="fullscreen-btn" onclick="toggleFullscreen('jamesDashFrame')">⛶ Fullscreen</button>
+                        <a href="#" id="jamesDashNewTab" target="_blank" rel="noopener">🔗 Open in new tab</a>
+                    </div>
                 </div>
                 <div id="jamesTagGame" style="display:none;">
                     <iframe id="jamesTagFrame" class="game-frame" allow="autoplay;fullscreen;accelerometer;gyroscope;xr-spatial-tracking" allowfullscreen title="James Tag"></iframe>
-                    <button class="fullscreen-btn" onclick="toggleFullscreen('jamesTagFrame')">⛶ Fullscreen</button>
+                    <div class="game-controls">
+                        <button class="fullscreen-btn" onclick="toggleFullscreen('jamesTagFrame')">⛶ Fullscreen</button>
+                        <a href="#" id="jamesTagNewTab" target="_blank" rel="noopener">🔗 Open in new tab</a>
+                    </div>
                 </div>
                 <div id="capuchinGame" style="display:none;">
                     <iframe id="capuchinFrame" class="game-frame" allow="autoplay;fullscreen;accelerometer;gyroscope;xr-spatial-tracking" allowfullscreen title="Juhuchin"></iframe>
-                    <button class="fullscreen-btn" onclick="toggleFullscreen('capuchinFrame')">⛶ Fullscreen</button>
+                    <div class="game-controls">
+                        <button class="fullscreen-btn" onclick="toggleFullscreen('capuchinFrame')">⛶ Fullscreen</button>
+                        <a href="#" id="capuchinNewTab" target="_blank" rel="noopener">🔗 Open in new tab</a>
+                    </div>
                 </div>
                 <div id="tungTungBogGame" style="display:none;">
                     <iframe id="tungTungBogFrame" class="game-frame" allow="autoplay;fullscreen;accelerometer;gyroscope;xr-spatial-tracking" allowfullscreen title="JungJungBOG"></iframe>
-                    <button class="fullscreen-btn" onclick="toggleFullscreen('tungTungBogFrame')">⛶ Fullscreen</button>
+                    <div class="game-controls">
+                        <button class="fullscreen-btn" onclick="toggleFullscreen('tungTungBogFrame')">⛶ Fullscreen</button>
+                        <a href="#" id="tungTungBogNewTab" target="_blank" rel="noopener">🔗 Open in new tab</a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -719,7 +747,9 @@
             document.getElementById('tungTungBogGame').style.display = 'none';
         }
 
-        const GITHUB_BASE = 'https://jamesgamesfun.github.io';
+        // Use jsDelivr to serve HTML files directly from GitHub with correct MIME type
+        const GITHUB_BASE = 'https://cdn.jsdelivr.net/gh/jamesgamesfun/jamesgamesfun.github.io@main';
+        // If your files are inside a folder, change to: 'https://cdn.jsdelivr.net/gh/jamesgamesfun/jamesgamesfun.github.io@main/folder/'
 
         function setActiveGameButton(activeId) {
             document.querySelectorAll('.game-toggle button').forEach(b => b.classList.remove('active-game'));
@@ -734,13 +764,18 @@
             document.getElementById('tungTungBogGame').style.display = 'none';
         }
 
-        function loadGameInIframe(frameId, url) {
+        function loadGameInIframe(frameId, url, newTabId) {
             hideAllGamePanels();
             const frame = document.getElementById(frameId);
             const panel = frame.parentElement;
             panel.style.display = 'block';
             if (frame.src !== url) {
                 frame.src = url;
+            }
+            // Update the "Open in new tab" link
+            const newTabLink = document.getElementById(newTabId);
+            if (newTabLink) {
+                newTabLink.href = url;
             }
             frame.focus();
         }
@@ -753,22 +788,22 @@
 
         document.getElementById('showJamesDash').addEventListener('click', () => {
             setActiveGameButton('showJamesDash');
-            loadGameInIframe('jamesDashFrame', GITHUB_BASE + '/gd.html');
+            loadGameInIframe('jamesDashFrame', GITHUB_BASE + '/gd.html', 'jamesDashNewTab');
         });
 
         document.getElementById('showJamesTag').addEventListener('click', () => {
             setActiveGameButton('showJamesTag');
-            loadGameInIframe('jamesTagFrame', GITHUB_BASE + '/gtag.html');
+            loadGameInIframe('jamesTagFrame', GITHUB_BASE + '/gtag.html', 'jamesTagNewTab');
         });
 
         document.getElementById('showCapuchin').addEventListener('click', () => {
             setActiveGameButton('showCapuchin');
-            loadGameInIframe('capuchinFrame', GITHUB_BASE + '/capuchin.html');
+            loadGameInIframe('capuchinFrame', GITHUB_BASE + '/capuchin.html', 'capuchinNewTab');
         });
 
         document.getElementById('showTungTungBog').addEventListener('click', () => {
             setActiveGameButton('showTungTungBog');
-            loadGameInIframe('tungTungBogFrame', GITHUB_BASE + '/tungtungbog.html');
+            loadGameInIframe('tungTungBogFrame', GITHUB_BASE + '/tungtungbog.html', 'tungTungBogNewTab');
         });
 
         // Fullscreen toggle
