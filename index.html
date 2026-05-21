@@ -76,12 +76,8 @@
             font-family: 'Arial Black', 'Impact', sans-serif;
         }
         @keyframes titlePulse {
-            from {
-                filter: drop-shadow(0 0 20px var(--neon));
-            }
-            to {
-                filter: drop-shadow(0 0 40px var(--neon2));
-            }
+            from { filter: drop-shadow(0 0 20px var(--neon)); }
+            to { filter: drop-shadow(0 0 40px var(--neon2)); }
         }
         .nav-btn {
             background: var(--surface);
@@ -111,9 +107,7 @@
             background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.06), transparent);
             transition: 0.5s;
         }
-        .nav-btn:hover::before {
-            left: 100%;
-        }
+        .nav-btn:hover::before { left: 100%; }
         .nav-btn:hover,
         .nav-btn.active {
             background: rgba(255, 0, 229, 0.1);
@@ -140,18 +134,10 @@
             display: none;
             animation: fadeSlide 0.5s ease;
         }
-        .section.active {
-            display: block;
-        }
+        .section.active { display: block; }
         @keyframes fadeSlide {
-            from {
-                opacity: 0;
-                transform: translateY(25px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(25px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         .card {
             background: rgba(10, 10, 30, 0.65);
@@ -166,12 +152,8 @@
             animation: cardGlow 3s infinite alternate;
         }
         @keyframes cardGlow {
-            from {
-                box-shadow: 0 0 20px rgba(255, 0, 229, 0.2);
-            }
-            to {
-                box-shadow: 0 0 40px rgba(0, 240, 255, 0.2);
-            }
+            from { box-shadow: 0 0 20px rgba(255, 0, 229, 0.2); }
+            to { box-shadow: 0 0 40px rgba(0, 240, 255, 0.2); }
         }
         .card:hover {
             transform: translateY(-5px);
@@ -203,13 +185,8 @@
             box-shadow: 0 0 30px rgba(255, 0, 229, 0.7);
             text-transform: uppercase;
         }
-        button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 0 50px rgba(255, 0, 229, 1);
-        }
-        button:active {
-            transform: translateY(0);
-        }
+        button:hover { transform: translateY(-3px); box-shadow: 0 0 50px rgba(255, 0, 229, 1); }
+        button:active { transform: translateY(0); }
         input,
         select,
         textarea {
@@ -225,23 +202,14 @@
             transition: all 0.3s ease;
             box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.4);
         }
-        textarea {
-            border-radius: 25px;
-            min-height: 80px;
-            resize: vertical;
-        }
+        textarea { border-radius: 25px; min-height: 80px; resize: vertical; }
         input:focus,
         select:focus,
         textarea:focus {
             border-color: var(--neon2);
             box-shadow: 0 0 30px rgba(0, 240, 255, 0.5), inset 0 2px 10px rgba(0, 0, 0, 0.5);
         }
-        .flex-row {
-            display: flex;
-            gap: 18px;
-            align-items: center;
-            flex-wrap: wrap;
-        }
+        .flex-row { display: flex; gap: 18px; align-items: center; flex-wrap: wrap; }
         .chat-box {
             height: 320px;
             overflow-y: auto;
@@ -253,14 +221,8 @@
             border: 1px solid rgba(255, 255, 255, 0.05);
             box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.6);
         }
-        .msg {
-            margin: 12px 0;
-            display: flex;
-            gap: 10px;
-        }
-        .msg.user {
-            justify-content: flex-end;
-        }
+        .msg { margin: 12px 0; display: flex; gap: 10px; }
+        .msg.user { justify-content: flex-end; }
         .msg span {
             max-width: 75%;
             padding: 12px 22px;
@@ -270,15 +232,8 @@
             white-space: pre-wrap;
             word-wrap: break-word;
         }
-        .msg.user span {
-            background: linear-gradient(135deg, var(--neon), #d400b0);
-            color: #fff;
-            box-shadow: 0 0 25px rgba(255, 0, 229, 0.6);
-        }
-        .msg.ai span {
-            background: linear-gradient(135deg, #00ccdd, var(--neon2));
-            color: #000;
-        }
+        .msg.user span { background: linear-gradient(135deg, var(--neon), #d400b0); color: #fff; box-shadow: 0 0 25px rgba(255, 0, 229, 0.6); }
+        .msg.ai span { background: linear-gradient(135deg, #00ccdd, var(--neon2)); color: #000; }
         .human-msg {
             margin: 10px 0;
             padding: 10px 18px;
@@ -289,12 +244,7 @@
             white-space: pre-wrap;
             word-wrap: break-word;
         }
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateX(-20px);
-            }
-        }
+        @keyframes slideIn { from { opacity: 0; transform: translateX(-20px); } }
         .role-badge {
             font-size: 0.7rem;
             padding: 3px 10px;
@@ -304,74 +254,18 @@
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
-        .role-Owner {
-            background: linear-gradient(135deg, #ffd700, #ffaa00);
-            color: #000;
-        }
-        .role-Admin {
-            background: linear-gradient(135deg, #ff3860, #ff0060);
-            color: white;
-        }
-        .role-Mod {
-            background: linear-gradient(135deg, #00d1b2, #00b89c);
-            color: #000;
-        }
-        .role-User {
-            background: linear-gradient(135deg, #485fc7, #3b4bbf);
-            color: white;
-        }
-        .role-Guest {
-            background: #555;
-            color: #ddd;
-        }
-        .banned-tag {
-            background: #ff3860;
-            color: white;
-            font-size: 0.7rem;
-            padding: 3px 12px;
-            border-radius: 20px;
-            margin-left: 6px;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-            background: rgba(0, 0, 0, 0.2);
-            border-radius: var(--radius-sm);
-            overflow: hidden;
-        }
-        th {
-            background: rgba(255, 0, 229, 0.1);
-            padding: 15px;
-            text-align: left;
-            font-weight: 600;
-            color: var(--neon);
-        }
-        td {
-            padding: 14px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-        }
-        .small-btn {
-            padding: 6px 16px;
-            font-size: 0.75rem;
-            margin: 0 4px;
-            border-radius: 30px;
-            letter-spacing: 0.5px;
-        }
-        #map {
-            height: 400px;
-            border-radius: var(--radius-sm);
-            margin: 20px 0;
-            border: 2px solid rgba(0, 240, 255, 0.3);
-            box-shadow: 0 0 40px rgba(0, 240, 255, 0.3);
-        }
-        .slot-machine {
-            display: flex;
-            gap: 25px;
-            justify-content: center;
-            font-size: 4.5rem;
-            margin: 35px 0;
-        }
+        .role-Owner { background: linear-gradient(135deg, #ffd700, #ffaa00); color: #000; }
+        .role-Admin { background: linear-gradient(135deg, #ff3860, #ff0060); color: white; }
+        .role-Mod { background: linear-gradient(135deg, #00d1b2, #00b89c); color: #000; }
+        .role-User { background: linear-gradient(135deg, #485fc7, #3b4bbf); color: white; }
+        .role-Guest { background: #555; color: #ddd; }
+        .banned-tag { background: #ff3860; color: white; font-size: 0.7rem; padding: 3px 12px; border-radius: 20px; margin-left: 6px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; background: rgba(0, 0, 0, 0.2); border-radius: var(--radius-sm); overflow: hidden; }
+        th { background: rgba(255, 0, 229, 0.1); padding: 15px; text-align: left; font-weight: 600; color: var(--neon); }
+        td { padding: 14px; border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
+        .small-btn { padding: 6px 16px; font-size: 0.75rem; margin: 0 4px; border-radius: 30px; letter-spacing: 0.5px; }
+        #map { height: 400px; border-radius: var(--radius-sm); margin: 20px 0; border: 2px solid rgba(0, 240, 255, 0.3); box-shadow: 0 0 40px rgba(0, 240, 255, 0.3); }
+        .slot-machine { display: flex; gap: 25px; justify-content: center; font-size: 4.5rem; margin: 35px 0; }
         .reel {
             background: rgba(15, 15, 30, 0.9);
             padding: 25px 35px;
@@ -381,35 +275,16 @@
             min-width: 100px;
             text-align: center;
         }
-        .balance {
-            font-size: 2.2rem;
-            color: var(--gold);
-            text-shadow: 0 0 25px var(--gold);
-            font-weight: 700;
-        }
-        .game-toggle {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-        }
+        .balance { font-size: 2.2rem; color: var(--gold); text-shadow: 0 0 25px var(--gold); font-weight: 700; }
+        .game-toggle { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
         .game-toggle button {
             background: rgba(255, 255, 255, 0.05);
             box-shadow: none;
             font-size: 0.85rem;
             padding: 10px 20px;
         }
-        .game-toggle button.active-game {
-            background: var(--neon);
-            box-shadow: 0 0 25px var(--neon);
-        }
-        .game-frame {
-            width: 100%;
-            height: 70vh;
-            border: none;
-            border-radius: var(--radius-sm);
-            background: #000;
-        }
+        .game-toggle button.active-game { background: var(--neon); box-shadow: 0 0 25px var(--neon); }
+        .game-frame { width: 100%; height: 70vh; border: none; border-radius: var(--radius-sm); background: #000; }
         .full-iframe {
             width: 100%;
             height: 75vh;
@@ -424,42 +299,15 @@
             display: inline-block;
             margin-top: 12px;
         }
-        .game-controls {
-            display: flex;
-            gap: 12px;
-            align-items: center;
-            margin-top: 12px;
-            flex-wrap: wrap;
-        }
-        .game-controls a {
-            color: var(--neon2);
-            font-weight: bold;
-            text-decoration: none;
-            border-bottom: 1px dashed;
-        }
-        .game-controls a:hover {
-            text-shadow: 0 0 8px var(--neon2);
-        }
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: rgba(0, 0, 0, 0.3);
-        }
-        ::-webkit-scrollbar-thumb {
-            background: var(--neon);
-            border-radius: 10px;
-            box-shadow: 0 0 10px var(--neon);
-        }
-        .link-glow {
-            color: var(--neon2);
-            text-decoration: none;
-            font-weight: bold;
-            border-bottom: 1px dashed;
-        }
-        .link-glow:hover {
-            text-shadow: 0 0 6px var(--neon2);
-        }
+        .game-controls { display: flex; gap: 12px; align-items: center; margin-top: 12px; flex-wrap: wrap; }
+        .game-controls a { color: var(--neon2); font-weight: bold; text-decoration: none; border-bottom: 1px dashed; }
+        .game-controls a:hover { text-shadow: 0 0 8px var(--neon2); }
+        .loading-text { color: var(--neon2); font-weight: bold; margin-left: 10px; display: none; }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: rgba(0, 0, 0, 0.3); }
+        ::-webkit-scrollbar-thumb { background: var(--neon); border-radius: 10px; box-shadow: 0 0 10px var(--neon); }
+        .link-glow { color: var(--neon2); text-decoration: none; font-weight: bold; border-bottom: 1px dashed; }
+        .link-glow:hover { text-shadow: 0 0 6px var(--neon2); }
     </style>
 </head>
 <body>
@@ -523,6 +371,7 @@
                     <div class="game-controls">
                         <button class="fullscreen-btn" onclick="toggleFullscreen('jamesDashFrame')">⛶ Fullscreen</button>
                         <a href="#" id="jamesDashNewTab" target="_blank" rel="noopener">🔗 Open in new tab</a>
+                        <span class="loading-text" id="jamesDashLoading">⏳ Loading game...</span>
                     </div>
                 </div>
                 <div id="jamesTagGame" style="display:none;">
@@ -530,6 +379,7 @@
                     <div class="game-controls">
                         <button class="fullscreen-btn" onclick="toggleFullscreen('jamesTagFrame')">⛶ Fullscreen</button>
                         <a href="#" id="jamesTagNewTab" target="_blank" rel="noopener">🔗 Open in new tab</a>
+                        <span class="loading-text" id="jamesTagLoading">⏳ Loading game...</span>
                     </div>
                 </div>
                 <div id="capuchinGame" style="display:none;">
@@ -537,6 +387,7 @@
                     <div class="game-controls">
                         <button class="fullscreen-btn" onclick="toggleFullscreen('capuchinFrame')">⛶ Fullscreen</button>
                         <a href="#" id="capuchinNewTab" target="_blank" rel="noopener">🔗 Open in new tab</a>
+                        <span class="loading-text" id="capuchinLoading">⏳ Loading game...</span>
                     </div>
                 </div>
                 <div id="tungTungBogGame" style="display:none;">
@@ -544,6 +395,7 @@
                     <div class="game-controls">
                         <button class="fullscreen-btn" onclick="toggleFullscreen('tungTungBogFrame')">⛶ Fullscreen</button>
                         <a href="#" id="tungTungBogNewTab" target="_blank" rel="noopener">🔗 Open in new tab</a>
+                        <span class="loading-text" id="tungTungBogLoading">⏳ Loading game...</span>
                     </div>
                 </div>
             </div>
@@ -585,9 +437,7 @@
                 <h3>🎰 Neon Slots</h3>
                 <p class="balance">Balance: <span id="balance">100</span> 💎</p>
                 <div class="slot-machine">
-                    <div class="reel" id="reel1">🍒</div>
-                    <div class="reel" id="reel2">🍋</div>
-                    <div class="reel" id="reel3">🔔</div>
+                    <div class="reel" id="reel1">🍒</div><div class="reel" id="reel2">🍋</div><div class="reel" id="reel3">🔔</div>
                 </div>
                 <button id="spinBtn">SPIN (10 💎)</button>
                 <p id="slotResult" style="margin-top:15px;font-size:1.4rem;"></p>
@@ -747,9 +597,16 @@
             document.getElementById('tungTungBogGame').style.display = 'none';
         }
 
-        // Use jsDelivr to serve HTML files directly from GitHub with correct MIME type
-        const GITHUB_BASE = 'https://cdn.jsdelivr.net/gh/jamesgamesfun/jamesgamesfun.github.io@main';
-        // If your files are inside a folder, change to: 'https://cdn.jsdelivr.net/gh/jamesgamesfun/jamesgamesfun.github.io@main/folder/'
+        // =============================================
+        // NEW: Fetch game HTML from GitHub raw, create blob, and load into iframe
+        // =============================================
+        // REPLACE this base URL with your own repository structure:
+        // If your repo is "jamesgamesfun.github.io" (GitHub Pages user site), use:
+        const GITHUB_RAW_BASE = 'https://raw.githubusercontent.com/jamesgamesfun/jamesgamesfun.github.io/main';
+        // If your repo is just "jamesgamesfun" (not .github.io), use:
+        // const GITHUB_RAW_BASE = 'https://raw.githubusercontent.com/jamesgamesfun/jamesgamesfun/main';
+        // If your HTML files are inside a folder (e.g., "games"), append that folder:
+        // const GITHUB_RAW_BASE = 'https://raw.githubusercontent.com/jamesgamesfun/jamesgamesfun.github.io/main/games';
 
         function setActiveGameButton(activeId) {
             document.querySelectorAll('.game-toggle button').forEach(b => b.classList.remove('active-game'));
@@ -764,22 +621,49 @@
             document.getElementById('tungTungBogGame').style.display = 'none';
         }
 
-        function loadGameInIframe(frameId, url, newTabId) {
+        function loadGameViaBlob(frameId, newTabId, loadingId, fileName) {
             hideAllGamePanels();
             const frame = document.getElementById(frameId);
             const panel = frame.parentElement;
             panel.style.display = 'block';
-            if (frame.src !== url) {
-                frame.src = url;
-            }
-            // Update the "Open in new tab" link
+            const loadingEl = document.getElementById(loadingId);
             const newTabLink = document.getElementById(newTabId);
-            if (newTabLink) {
-                newTabLink.href = url;
-            }
-            frame.focus();
+
+            // Show loading indicator
+            if (loadingEl) loadingEl.style.display = 'inline';
+            // Reset iframe to about:blank while loading
+            frame.src = 'about:blank';
+
+            const url = GITHUB_RAW_BASE + '/' + fileName;
+            // Update new tab link to raw URL (so it always works even if iframe doesn't)
+            if (newTabLink) newTabLink.href = url;
+
+            fetch(url)
+                .then(response => {
+                    if (!response.ok) throw new Error('File not found (' + response.status + ')');
+                    return response.text();
+                })
+                .then(html => {
+                    const blob = new Blob([html], { type: 'text/html' });
+                    const blobUrl = URL.createObjectURL(blob);
+                    frame.src = blobUrl;
+                    // Clean up the blob URL after it's loaded (optional, but good practice)
+                    frame.onload = () => {
+                        URL.revokeObjectURL(blobUrl);
+                        if (loadingEl) loadingEl.style.display = 'none';
+                    };
+                })
+                .catch(err => {
+                    console.error('Failed to load game:', err);
+                    frame.src = 'about:blank';
+                    if (loadingEl) {
+                        loadingEl.textContent = '❌ Error loading game. Check file name or path.';
+                        loadingEl.style.color = '#ff3860';
+                    }
+                });
         }
 
+        // Game button event listeners
         document.getElementById('showNumberGuess').addEventListener('click', () => {
             setActiveGameButton('showNumberGuess');
             hideAllGamePanels();
@@ -788,22 +672,22 @@
 
         document.getElementById('showJamesDash').addEventListener('click', () => {
             setActiveGameButton('showJamesDash');
-            loadGameInIframe('jamesDashFrame', GITHUB_BASE + '/gd.html', 'jamesDashNewTab');
+            loadGameViaBlob('jamesDashFrame', 'jamesDashNewTab', 'jamesDashLoading', 'gd.html');
         });
 
         document.getElementById('showJamesTag').addEventListener('click', () => {
             setActiveGameButton('showJamesTag');
-            loadGameInIframe('jamesTagFrame', GITHUB_BASE + '/gtag.html', 'jamesTagNewTab');
+            loadGameViaBlob('jamesTagFrame', 'jamesTagNewTab', 'jamesTagLoading', 'gtag.html');
         });
 
         document.getElementById('showCapuchin').addEventListener('click', () => {
             setActiveGameButton('showCapuchin');
-            loadGameInIframe('capuchinFrame', GITHUB_BASE + '/capuchin.html', 'capuchinNewTab');
+            loadGameViaBlob('capuchinFrame', 'capuchinNewTab', 'capuchinLoading', 'capuchin.html');
         });
 
         document.getElementById('showTungTungBog').addEventListener('click', () => {
             setActiveGameButton('showTungTungBog');
-            loadGameInIframe('tungTungBogFrame', GITHUB_BASE + '/tungtungbog.html', 'tungTungBogNewTab');
+            loadGameViaBlob('tungTungBogFrame', 'tungTungBogNewTab', 'tungTungBogLoading', 'tungtungbog.html');
         });
 
         // Fullscreen toggle
