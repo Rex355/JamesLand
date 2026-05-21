@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>⚡ JAMES LAND · Portal to JamesGamesFun · AI · Chat · Hub</title>
+    <title>⚡ JAMES LAND · Folder Games Hub · AI Chat · Portal</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <style>
         :root {
@@ -210,9 +210,7 @@
         button:active {
             transform: translateY(0);
         }
-        input,
-        select,
-        textarea {
+        input, select, textarea {
             background: rgba(20, 20, 40, 0.8);
             border: 1px solid rgba(255, 255, 255, 0.1);
             color: white;
@@ -230,9 +228,7 @@
             min-height: 80px;
             resize: vertical;
         }
-        input:focus,
-        select:focus,
-        textarea:focus {
+        input:focus, select:focus, textarea:focus {
             border-color: var(--neon2);
             box-shadow: 0 0 30px rgba(0, 240, 255, 0.5), inset 0 2px 10px rgba(0, 0, 0, 0.5);
         }
@@ -253,162 +249,56 @@
             border: 1px solid rgba(255, 255, 255, 0.05);
             box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.6);
         }
-        .msg {
-            margin: 12px 0;
+        .game-grid {
             display: flex;
-            gap: 10px;
-        }
-        .msg.user {
-            justify-content: flex-end;
-        }
-        .msg span {
-            max-width: 75%;
-            padding: 12px 22px;
-            border-radius: 30px;
-            background: rgba(30, 30, 60, 0.8);
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-            white-space: pre-wrap;
-            word-wrap: break-word;
-        }
-        .msg.user span {
-            background: linear-gradient(135deg, var(--neon), #d400b0);
-            color: #fff;
-            box-shadow: 0 0 25px rgba(255, 0, 229, 0.6);
-        }
-        .msg.ai span {
-            background: linear-gradient(135deg, #00ccdd, var(--neon2));
-            color: #000;
-        }
-        .human-msg {
-            margin: 10px 0;
-            padding: 10px 18px;
-            background: rgba(25, 25, 50, 0.8);
-            border-radius: 18px;
-            border-left: 4px solid var(--neon2);
-            animation: slideIn 0.3s ease;
-            white-space: pre-wrap;
-            word-wrap: break-word;
-        }
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateX(-20px);
-            }
-        }
-        .role-badge {
-            font-size: 0.7rem;
-            padding: 3px 10px;
-            border-radius: 20px;
-            font-weight: 700;
-            margin-right: 6px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        .role-Owner {
-            background: linear-gradient(135deg, #ffd700, #ffaa00);
-            color: #000;
-        }
-        .role-Admin {
-            background: linear-gradient(135deg, #ff3860, #ff0060);
-            color: white;
-        }
-        .role-Mod {
-            background: linear-gradient(135deg, #00d1b2, #00b89c);
-            color: #000;
-        }
-        .role-User {
-            background: linear-gradient(135deg, #485fc7, #3b4bbf);
-            color: white;
-        }
-        .role-Guest {
-            background: #555;
-            color: #ddd;
-        }
-        .banned-tag {
-            background: #ff3860;
-            color: white;
-            font-size: 0.7rem;
-            padding: 3px 12px;
-            border-radius: 20px;
-            margin-left: 6px;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-            background: rgba(0, 0, 0, 0.2);
-            border-radius: var(--radius-sm);
-            overflow: hidden;
-        }
-        th {
-            background: rgba(255, 0, 229, 0.1);
-            padding: 15px;
-            text-align: left;
-            font-weight: 600;
-            color: var(--neon);
-        }
-        td {
-            padding: 14px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-        }
-        .small-btn {
-            padding: 6px 16px;
-            font-size: 0.75rem;
-            margin: 0 4px;
-            border-radius: 30px;
-            letter-spacing: 0.5px;
-        }
-        #map {
-            height: 400px;
-            border-radius: var(--radius-sm);
-            margin: 20px 0;
-            border: 2px solid rgba(0, 240, 255, 0.3);
-            box-shadow: 0 0 40px rgba(0, 240, 255, 0.3);
-        }
-        .slot-machine {
-            display: flex;
-            gap: 25px;
-            justify-content: center;
-            font-size: 4.5rem;
-            margin: 35px 0;
-        }
-        .reel {
-            background: rgba(15, 15, 30, 0.9);
-            padding: 25px 35px;
-            border-radius: 25px;
-            border: 2px solid var(--gold);
-            box-shadow: 0 0 50px rgba(255, 204, 0, 0.7), inset 0 0 25px rgba(255, 204, 0, 0.3);
-            min-width: 100px;
-            text-align: center;
-        }
-        .balance {
-            font-size: 2.2rem;
-            color: var(--gold);
-            text-shadow: 0 0 25px var(--gold);
-            font-weight: 700;
-        }
-        .game-toggle {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
             flex-wrap: wrap;
+            gap: 16px;
+            margin: 25px 0;
+            max-height: 300px;
+            overflow-y: auto;
+            padding: 10px;
+            background: rgba(0,0,0,0.3);
+            border-radius: var(--radius-sm);
         }
-        .game-toggle button {
-            background: rgba(255, 255, 255, 0.05);
-            box-shadow: none;
-            font-size: 0.85rem;
-            padding: 10px 20px;
+        .game-card {
+            background: rgba(20,20,50,0.8);
+            backdrop-filter: blur(8px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 12px 24px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-weight: bold;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
         }
-        .game-toggle button.active-game {
-            background: var(--neon);
-            box-shadow: 0 0 25px var(--neon);
+        .game-card:hover {
+            background: rgba(255,0,229,0.3);
+            border-color: var(--neon);
+            transform: scale(1.02);
+            box-shadow: 0 0 20px rgba(255,0,229,0.5);
         }
         .game-frame {
             width: 100%;
-            height: 70vh;
-            border: none;
+            height: 65vh;
+            border: 2px solid rgba(0, 240, 255, 0.5);
             border-radius: var(--radius-sm);
             background: #000;
+            box-shadow: 0 0 35px rgba(0,240,255,0.3);
+        }
+        .folder-hint {
+            background: rgba(0,240,255,0.1);
+            padding: 15px;
+            border-radius: 30px;
+            margin: 15px 0;
+            border-left: 6px solid var(--neon2);
+        }
+        .badge-neon {
+            background: #ff00e520;
+            padding: 5px 12px;
+            border-radius: 40px;
+            font-size: 0.8rem;
         }
         .full-iframe {
             width: 100%;
@@ -416,7 +306,6 @@
             border-radius: var(--radius-sm);
             border: 2px solid rgba(0, 240, 255, 0.4);
             background: #000;
-            transition: all 0.2s;
         }
         ::-webkit-scrollbar {
             width: 8px;
@@ -427,16 +316,12 @@
         ::-webkit-scrollbar-thumb {
             background: var(--neon);
             border-radius: 10px;
-            box-shadow: 0 0 10px var(--neon);
         }
         .link-glow {
             color: var(--neon2);
             text-decoration: none;
             font-weight: bold;
             border-bottom: 1px dashed;
-        }
-        .link-glow:hover {
-            text-shadow: 0 0 6px var(--neon2);
         }
     </style>
 </head>
@@ -446,14 +331,14 @@
         <div class="logo-text">⚡JAMES LAND</div>
         <button class="nav-btn active" data-section="ai-chat"><span class="icon">🤖</span> AI Chat</button>
         <button class="nav-btn" data-section="human-chat"><span class="icon">💬</span> Human Chat</button>
-        <button class="nav-btn" data-section="games"><span class="icon">🎮</span> Games</button>
+        <button class="nav-btn" data-section="games"><span class="icon">🎮</span> Games Hub</button>
         <button class="nav-btn" data-section="jamesgamesfun"><span class="icon">🌐</span> JamesGamesFun</button>
         <button class="nav-btn" data-section="tools"><span class="icon">🛠️</span> Tools</button>
         <button class="nav-btn" data-section="gambling"><span class="icon">🎰</span> Gambling</button>
         <button class="nav-btn" data-section="maps"><span class="icon">🗺️</span> Maps</button>
         <button class="nav-btn" data-section="calc"><span class="icon">🔢</span> Calculator</button>
         <button class="nav-btn" data-section="users"><span class="icon">👤</span> Users</button>
-        <div style="margin-top: auto; font-size: 0.75rem; color: #555; text-align: center;">Free APIs · OSM · GUN · GitHub Pages</div>
+        <div style="margin-top: auto; font-size: 0.75rem; color: #555; text-align: center;">📁 Folder games · GUN Chat · OSM</div>
     </div>
     <div class="main">
         <div id="ai-chat" class="section active">
@@ -466,6 +351,7 @@
                 </div>
             </div>
         </div>
+        
         <div id="human-chat" class="section">
             <div class="card">
                 <h3>💬 Human Chat</h3>
@@ -478,35 +364,38 @@
                 </div>
             </div>
         </div>
+
+        <!-- GAMES SECTION - FOLDER GAME HUB -->
         <div id="games" class="section">
             <div class="card">
-                <h3>🎮 Arcade</h3>
-                <div class="game-toggle">
-                    <button id="showNumberGuess" class="active-game">🧠 Number Guess</button>
-                    <button id="showJamesDash">🔷 James Dash (gd.html)</button>
-                    <button id="showJamesTag">🦍 James Tag (gtag.html)</button>
-                    <button id="showCapuchin">🐒 Capuchin</button>
-                    <button id="showTungTungBog">🥁 TungTungBog</button>
+                <h3>🎮 Folder Game Vault: jamesgamesfun</h3>
+                <div class="folder-hint">
+                    ⚡ <strong>Load your game library</strong> — Select the folder named <code style="background:#000000aa; padding:4px 8px; border-radius:20px;">📁 jamesgamesfun</code> that contains your .html game files.<br>
+                    ✅ All HTML games will appear instantly. Click any game to play right here!
                 </div>
-                <div id="numberGuessGame">
+                <div class="flex-row" style="justify-content: space-between; flex-wrap: wrap;">
+                    <label for="gameFolderPicker" style="background: #0a0a2a; padding: 10px 20px; border-radius: 60px; cursor: pointer; border: 1px solid var(--neon2);">
+                        📂 OPEN FOLDER (jamesgamesfun)
+                    </label>
+                    <input type="file" id="gameFolderPicker" webkitdirectory directory multiple style="display: none;" />
+                    <button id="clearFolderGames" style="background:#333; box-shadow: none;">🗑️ Clear Games</button>
+                </div>
+                <div id="gamesFolderStatus" style="margin: 20px 0 10px 0; font-size: 0.9rem; color: #ccc;"></div>
+                <div id="gameListContainer" class="game-grid"></div>
+                <div id="gamePlayerArea" style="margin-top: 30px;">
+                    <div class="flex-row" style="justify-content: space-between; margin-bottom: 12px;">
+                        <h4 style="margin:0; color: var(--neon2);">🎮 GAME PLAYER</h4>
+                        <span id="activeGameName" class="badge-neon">No game selected</span>
+                    </div>
+                    <iframe id="dynamicGameFrame" class="game-frame" sandbox="allow-same-origin allow-scripts allow-popups allow-forms allow-modals" title="Game Player" srcdoc="<html style='background:#0a0a1a; color:white; display:flex; align-items:center; justify-content:center;'><body style='font-family:monospace;'><h3>✨ Select a game from your folder</h3><p>Click any .html game above to launch</p></body></html>"></iframe>
+                </div>
+                <!-- Bonus classic number guess (kept for quick fun) -->
+                <div style="margin-top: 35px; border-top: 1px dashed rgba(255,255,255,0.2); padding-top: 20px;">
+                    <h4 style="color:var(--gold);">🔢 Classic: Number Guess (bonus)</h4>
                     <p>Guess the number (1-100)</p>
-                    <input type="number" id="guessInput" placeholder="Your guess">
-                    <button id="guessBtn">Guess</button>
-                    <p id="gameHint" style="margin-top:15px;font-weight:bold;"></p>
+                    <div class="flex-row"><input type="number" id="guessInput" placeholder="Your guess" style="max-width:200px;"><button id="guessBtn">Guess</button><button id="newGameBtn" style="background:linear-gradient(135deg,#00ccdd,#0099aa);">New Game</button></div>
+                    <p id="gameHint" style="margin-top:10px; font-weight:bold;"></p>
                     <p>Attempts: <span id="attempts">0</span></p>
-                    <button id="newGameBtn" style="background:linear-gradient(135deg,#00ccdd,#0099aa);">New Game</button>
-                </div>
-                <div id="jamesDashGame" style="display:none;">
-                    <iframe id="jamesDashFrame" class="game-frame" allow="autoplay;fullscreen;accelerometer;gyroscope;xr-spatial-tracking" title="James Dash"></iframe>
-                </div>
-                <div id="jamesTagGame" style="display:none;">
-                    <iframe id="jamesTagFrame" class="game-frame" allow="autoplay;fullscreen;accelerometer;gyroscope;xr-spatial-tracking" title="James Tag"></iframe>
-                </div>
-                <div id="capuchinGame" style="display:none;">
-                    <iframe id="capuchinFrame" class="game-frame" allow="autoplay;fullscreen;accelerometer;gyroscope;xr-spatial-tracking" title="Capuchin"></iframe>
-                </div>
-                <div id="tungTungBogGame" style="display:none;">
-                    <iframe id="tungTungBogFrame" class="game-frame" allow="autoplay;fullscreen;accelerometer;gyroscope;xr-spatial-tracking" title="TungTungBog"></iframe>
                 </div>
             </div>
         </div>
@@ -514,14 +403,12 @@
         <div id="jamesgamesfun" class="section">
             <div class="card">
                 <h3>🌐 JamesGamesFun · GitHub Universe</h3>
-                <p style="margin-bottom: 12px; color: #ccddee;">🎮 Direct access to <strong class="link-glow">jamesgamesfun.github.io</strong> — play interactive creations, retro games, and more!</p>
+                <p style="margin-bottom: 12px;">🎮 Direct access to <strong class="link-glow">jamesgamesfun.github.io</strong> — external hub.</p>
                 <iframe id="jamesGamesIframe" class="full-iframe" src="https://jamesgamesfun.github.io" title="James Games Fun Hub" loading="lazy" allow="autoplay; fullscreen; clipboard-write; encrypted-media; picture-in-picture" referrerpolicy="strict-origin-when-cross-origin"></iframe>
                 <div class="flex-row" style="justify-content: space-between; margin-top: 20px;">
-                    <span>🔗 <a href="https://jamesgamesfun.github.io" target="_blank" class="link-glow" style="font-size:1rem;">Open in new tab → Fullscreen</a></span>
-                    <span>📁 <a href="https://github.com/jamesgamesfun" target="_blank" class="link-glow">GitHub Repository</a></span>
-                    <span>✨ Embedded with live updates</span>
+                    <span>🔗 <a href="https://jamesgamesfun.github.io" target="_blank" class="link-glow">Open in new tab</a></span>
+                    <span>📁 <a href="https://github.com/jamesgamesfun" target="_blank" class="link-glow">GitHub Repo</a></span>
                 </div>
-                <p style="font-size: 0.85rem; margin-top: 15px; opacity: 0.8;">⚡ Seamless access to all games & experiments hosted on JamesGamesFun GitHub Pages.</p>
             </div>
         </div>
 
@@ -529,16 +416,8 @@
             <div class="card">
                 <h3>⏱️ Stopwatch & Counter</h3>
                 <div class="flex-row" style="justify-content:space-between;">
-                    <div>
-                        <h4 style="color:var(--neon2);">Stopwatch</h4>
-                        <h2 id="timerDisplay" style="font-size:2.8rem;text-shadow:0 0 20px var(--neon2);">00:00.00</h2>
-                        <button id="startTimer">Start</button><button id="pauseTimer">Pause</button><button id="resetTimer">Reset</button>
-                    </div>
-                    <div style="flex:1;margin-left:30px;">
-                        <h4 style="color:var(--neon);">Word / Char Counter</h4>
-                        <textarea id="textCounter" rows="4" placeholder="Type something..."></textarea>
-                        <p>Words: <span id="wordCount">0</span> | Characters: <span id="charCount">0</span></p>
-                    </div>
+                    <div><h4 style="color:var(--neon2);">Stopwatch</h4><h2 id="timerDisplay" style="font-size:2.8rem;">00:00.00</h2><button id="startTimer">Start</button><button id="pauseTimer">Pause</button><button id="resetTimer">Reset</button></div>
+                    <div style="flex:1;margin-left:30px;"><h4 style="color:var(--neon);">Word / Char Counter</h4><textarea id="textCounter" rows="4" placeholder="Type..."></textarea><p>Words: <span id="wordCount">0</span> | Characters: <span id="charCount">0</span></p></div>
                 </div>
             </div>
         </div>
@@ -546,23 +425,19 @@
             <div class="card">
                 <h3>🎰 Neon Slots</h3>
                 <p class="balance">Balance: <span id="balance">100</span> 💎</p>
-                <div class="slot-machine">
-                    <div class="reel" id="reel1">🍒</div>
-                    <div class="reel" id="reel2">🍋</div>
-                    <div class="reel" id="reel3">🔔</div>
-                </div>
+                <div class="slot-machine"><div class="reel" id="reel1">🍒</div><div class="reel" id="reel2">🍋</div><div class="reel" id="reel3">🔔</div></div>
                 <button id="spinBtn">SPIN (10 💎)</button>
-                <p id="slotResult" style="margin-top:15px;font-size:1.4rem;"></p>
+                <p id="slotResult" style="margin-top:15px;"></p>
             </div>
         </div>
         <div id="maps" class="section">
-            <div class="card"><h3>🗺️ World Map</h3><div id="map"></div><p style="margin-top:10px;">📍 Click to add a marker</p></div>
+            <div class="card"><h3>🗺️ World Map</h3><div id="map"></div><p style="margin-top:10px;">📍 Click to add marker</p></div>
         </div>
         <div id="calc" class="section">
             <div class="card">
                 <h3>🔢 Calculator</h3>
                 <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;max-width:380px;">
-                    <input id="calcDisplay" style="grid-column:span 4;text-align:right;font-size:2rem;padding:18px;background:#0a0a1a;" readonly value="0">
+                    <input id="calcDisplay" style="grid-column:span 4;text-align:right;font-size:2rem;padding:18px;" readonly value="0">
                     <button class="calc-btn">7</button><button class="calc-btn">8</button><button class="calc-btn">9</button><button class="calc-btn" style="background:#ff3860;">/</button>
                     <button class="calc-btn">4</button><button class="calc-btn">5</button><button class="calc-btn">6</button><button class="calc-btn" style="background:#ff3860;">*</button>
                     <button class="calc-btn">1</button><button class="calc-btn">2</button><button class="calc-btn">3</button><button class="calc-btn" style="background:#ff3860;">-</button>
@@ -572,451 +447,141 @@
             </div>
         </div>
         <div id="users" class="section">
-            <div class="card">
-                <h3>👤 User System</h3>
-                <div id="userLoggedOut">
-                    <h4>Login / Create Account</h4>
-                    <input type="text" id="usernameInput" placeholder="Username"><input type="password" id="passwordInput" placeholder="Password">
-                    <div class="flex-row"><button id="loginBtn">Login</button><button id="createUserBtn">Create</button></div>
-                </div>
-                <div id="userLoggedIn" style="display:none;">
-                    <h4>Welcome, <span id="currentUserDisplay"></span>!</h4>
-                    <p>Role: <span id="currentUserRole" class="role-badge"></span></p>
-                    <button id="logoutBtn" style="background:#ff3860;">Logout</button>
-                </div>
-                <p id="userMsg" style="margin-top:10px;color:var(--neon2);"></p>
-                <div id="adminPanel" style="display:none;margin-top:30px;">
-                    <h4 style="color:var(--neon2);">👑 Management</h4>
-                    <table id="userTable"><thead><tr><th>Username</th><th>Role</th><th>Status</th><th>Actions</th></tr></thead><tbody id="userTableBody"></tbody></table>
-                </div>
-            </div>
+            <div class="card"><h3>👤 User System</h3><div id="userLoggedOut"><h4>Login / Create</h4><input type="text" id="usernameInput" placeholder="Username"><input type="password" id="passwordInput" placeholder="Password"><div class="flex-row"><button id="loginBtn">Login</button><button id="createUserBtn">Create</button></div></div><div id="userLoggedIn" style="display:none;"><h4>Welcome, <span id="currentUserDisplay"></span>!<span id="currentUserRole" class="role-badge"></span></h4><button id="logoutBtn" style="background:#ff3860;">Logout</button></div><p id="userMsg"></p><div id="adminPanel" style="display:none;margin-top:30px;"><h4 style="color:var(--neon2);">👑 Management</h4><table id="userTable"><thead><tr><th>Username</th><th>Role</th><th>Status</th><th>Actions</th></tr></thead><tbody id="userTableBody"></tbody></table></div></div>
         </div>
     </div>
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/gun/gun.js">
-    </script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gun/gun.js"></script>
     <script>
-        (function() {
-            const c = document.getElementById('particleCanvas'),
-                ctx = c.getContext('2d');
-            let p = [];
-
-            function rs() {
-                c.width = window.innerWidth;
-                c.height = window.innerHeight;
-            }
-            window.addEventListener('resize', rs);
-            rs();
-            class P {
-                constructor() { this.reset(); }
-                reset() {
-                    this.x = Math.random() * c.width;
-                    this.y = Math.random() * c.height;
-                    this.vx = (Math.random() - 0.5) * 0.5;
-                    this.vy = (Math.random() - 0.5) * 0.5;
-                    this.size = Math.random() * 2 + 0.5;
-                    this.opacity = Math.random() * 0.8 + 0.2;
-                    this.color = Math.random() > 0.5 ? 'rgba(255,0,229,' : 'rgba(0,240,255,';
-                }
-                update() {
-                    this.x += this.vx;
-                    this.y += this.vy;
-                    if (this.x < 0 || this.x > c.width || this.y < 0 || this.y > c.height) this.reset();
-                }
-                draw() {
-                    ctx.beginPath();
-                    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                    ctx.fillStyle = this.color + this.opacity + ')';
-                    ctx.shadowColor = this.color + '1)';
-                    ctx.shadowBlur = 10;
-                    ctx.fill();
-                }
-            }
-            for (let i = 0; i < 100; i++) p.push(new P());
-
-            function anim() {
-                ctx.clearRect(0, 0, c.width, c.height);
-                p.forEach(x => { x.update();
-                    x.draw(); });
-                requestAnimationFrame(anim);
-            }
-            anim();
+        (function particles() {
+            const c = document.getElementById('particleCanvas'), ctx = c.getContext('2d');
+            let particles = [];
+            function resize() { c.width = window.innerWidth; c.height = window.innerHeight; }
+            window.addEventListener('resize', resize); resize();
+            class Particle { constructor() { this.reset(); } reset() { this.x = Math.random() * c.width; this.y = Math.random() * c.height; this.vx = (Math.random() - 0.5) * 0.4; this.vy = (Math.random() - 0.5) * 0.4; this.size = Math.random() * 2 + 0.5; this.opacity = Math.random() * 0.7 + 0.2; this.color = Math.random() > 0.5 ? 'rgba(255,0,229,' : 'rgba(0,240,255,'; } update() { this.x += this.vx; this.y += this.vy; if (this.x < 0 || this.x > c.width || this.y < 0 || this.y > c.height) this.reset(); } draw() { ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fillStyle = this.color + this.opacity + ')'; ctx.shadowBlur = 8; ctx.fill(); } }
+            for (let i=0;i<120;i++) particles.push(new Particle());
+            function animate() { ctx.clearRect(0,0,c.width,c.height); particles.forEach(p=>{p.update(); p.draw();}); requestAnimationFrame(animate); } animate();
         })();
 
-        function loadBal() { let s = localStorage.getItem('jamesGems'); return s ? parseInt(s) : 100; }
-
-        function saveBal(b) { localStorage.setItem('jamesGems', b); }
-        let balance = loadBal();
+        // Core user & localStorage
+        let balance = (()=>{ let b = localStorage.getItem('jamesGems'); return b ? parseInt(b) : 100; })();
         document.getElementById('balance').textContent = balance;
+        function saveBal(b){ localStorage.setItem('jamesGems', b); }
+        function getBan(){ return JSON.parse(localStorage.getItem('jamesBanned') || '[]'); }
+        function banUser(u){ let b=getBan(); if(!b.includes(u)){ b.push(u); localStorage.setItem('jamesBanned', JSON.stringify(b)); } }
+        function unbanUser(u){ localStorage.setItem('jamesBanned', JSON.stringify(getBan().filter(x=>x!==u))); }
+        function initOwner(){ let u=JSON.parse(localStorage.getItem('jamesUsers')||'{}'); if(!u['submissive femboy']){ u['submissive femboy']={password:'owner123', role:'Owner'}; localStorage.setItem('jamesUsers',JSON.stringify(u));} }
+        initOwner();
+        function getUsers(){ return JSON.parse(localStorage.getItem('jamesUsers')||'{}'); }
+        function saveUsers(u){ localStorage.setItem('jamesUsers',JSON.stringify(u)); }
+        function getCur(){ return localStorage.getItem('jamesCur'); }
+        function getCurRole(){ let n=getCur(); if(!n) return null; let u=getUsers(); return u[n]?u[n].role:null; }
+        function isBanned(u){ return getBan().includes(u); }
 
-        function getBan() { return JSON.parse(localStorage.getItem('jamesBanned') || '[]'); }
-
-        function saveBan(l) { localStorage.setItem('jamesBanned', JSON.stringify(l)); }
-
-        function isBanned(u) { return getBan().includes(u); }
-
-        function banUser(u) { let b = getBan(); if (!b.includes(u)) { b.push(u);
-                saveBan(b); } }
-
-        function unbanUser(u) { saveBan(getBan().filter(x => x !== u)); }
-
-        (function initOwner() {
-            let u = JSON.parse(localStorage.getItem('jamesUsers') || '{}');
-            if (!u['submissive femboy']) { u['submissive femboy'] = { password: 'owner123', role: 'Owner' };
-                localStorage.setItem('jamesUsers', JSON.stringify(u)); }
-        })();
-
-        function getUsers() { return JSON.parse(localStorage.getItem('jamesUsers') || '{}'); }
-
-        function saveUsers(u) { localStorage.setItem('jamesUsers', JSON.stringify(u)); }
-
-        function getCur() { return localStorage.getItem('jamesCur'); }
-
-        function getCurRole() { let n = getCur(); if (!n) return null; let u = getUsers(); return u[n] ? u[n].role :
-                null; }
-
-        const secs = document.querySelectorAll('.section'),
-            navs = document.querySelectorAll('.nav-btn');
-        navs.forEach(b => b.addEventListener('click', () => {
-            navs.forEach(x => x.classList.remove('active'));
-            b.classList.add('active');
-            let id = b.dataset.section;
-            secs.forEach(s => s.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
-            if (id === 'maps') { setTimeout(() => { initMap(); if (map) map.invalidateSize(); }, 150); }
-            if (id === 'users') refUI();
-            if (id === 'human-chat') upNick();
-            if (id === 'games') {
-                resetGamesToNumberGuess();
-            }
-            if (id === 'jamesgamesfun') { let ifr = document.getElementById('jamesGamesIframe'); if (ifr && ifr
-                    .src !== "https://jamesgamesfun.github.io") ifr.src =
-                    "https://jamesgamesfun.github.io"; }
+        // Navigation
+        const sections = document.querySelectorAll('.section'), navs = document.querySelectorAll('.nav-btn');
+        navs.forEach(btn=>btn.addEventListener('click',()=>{
+            navs.forEach(b=>b.classList.remove('active')); btn.classList.add('active');
+            let id = btn.dataset.section;
+            sections.forEach(s=>s.classList.remove('active')); document.getElementById(id).classList.add('active');
+            if(id==='maps') setTimeout(()=>{ if(window.map) map.invalidateSize(); else initMap(); }, 150);
+            if(id==='users') refUI();
+            if(id==='human-chat') upNick();
+            if(id==='jamesgamesfun'){ let ifr=document.getElementById('jamesGamesIframe'); if(ifr && ifr.src !== "https://jamesgamesfun.github.io") ifr.src="https://jamesgamesfun.github.io";}
         }));
 
-        function resetGamesToNumberGuess() {
-            setActiveGameButton('showNumberGuess');
-            document.getElementById('numberGuessGame').style.display = 'block';
-            document.getElementById('jamesDashGame').style.display = 'none';
-            document.getElementById('jamesTagGame').style.display = 'none';
-            document.getElementById('capuchinGame').style.display = 'none';
-            document.getElementById('tungTungBogGame').style.display = 'none';
-        }
+        // AI Chat logic unchanged
+        const chatMsgs=document.getElementById('chatMessages'), chatIn=document.getElementById('chatInput'), sendBtn=document.getElementById('sendChatBtn');
+        function appMsg(role,content){ let d=document.createElement('div'); d.className='msg '+role; d.innerHTML='<span>'+escapeHtml(content)+'</span>'; chatMsgs.appendChild(d); chatMsgs.scrollTop=chatMsgs.scrollHeight; }
+        function escapeHtml(str){ return str.replace(/[&<>]/g, function(m){ if(m==='&') return '&amp;'; if(m==='<') return '&lt;'; if(m==='>') return '&gt;'; return m;});}
+        async function sendAI(){ let txt=chatIn.value.trim(); if(!txt) return; appMsg('user',txt); chatIn.value=''; let think=document.createElement('div'); think.className='msg ai'; think.innerHTML='<span>⚡ Thinking...</span>'; chatMsgs.appendChild(think); chatMsgs.scrollTop=chatMsgs.scrollHeight;
+            try{ let res=await fetch('https://text.pollinations.ai/openai',{ method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({model:'openai', messages:[{role:'user',content:txt}]}) }); let data=await res.json(); let reply=data.choices?.[0]?.message?.content||"No reply."; think.remove(); appMsg('ai',reply); }catch(e){ think.remove(); appMsg('ai','AI error, try again.'); } }
+        sendBtn.addEventListener('click',sendAI); chatIn.addEventListener('keydown',e=>{if(e.ctrlKey&&e.key==='Enter'){e.preventDefault();sendAI();}});
+        
+        // GUN Chat
+        const gun = Gun(['https://gun-manhattan.herokuapp.com/gun']), chatNode = gun.get('james-land-chat');
+        function getNick(){ let u=getCur(); if(u) return u; return document.getElementById('nicknameInput').value.trim() || 'Guest'+Math.floor(Math.random()*1000); }
+        function getRole(){ let u=getCur(); if(u) return getCurRole()||'User'; return 'Guest'; }
+        const hBox=document.getElementById('humanChatBox'), hIn=document.getElementById('humanMsgInput'), nInfo=document.getElementById('chatNickInfo');
+        function upNick(){ let u=getCur(); if(u){ document.getElementById('nicknameInput').disabled=true; document.getElementById('setNickBtn').disabled=true; nInfo.innerHTML='Logged in as <strong>'+escapeHtml(u)+'</strong> <span class="role-badge role-'+getCurRole()+'">'+getCurRole()+'</span>'; } else { document.getElementById('nicknameInput').disabled=false; document.getElementById('setNickBtn').disabled=false; nInfo.innerHTML='Set nickname or <a href="#" onclick="document.querySelector(\'[data-section=users]\').click()">log in</a> to show role.'; } }
+        document.getElementById('setNickBtn').addEventListener('click',upNick);
+        chatNode.map().on((msg,id)=>{ if(msg&&msg.nick&&msg.text&&!document.getElementById('msg-'+id)){ let d=document.createElement('div'); d.id='msg-'+id; d.className='human-msg'; d.innerHTML='<span class="role-badge role-'+msg.role+'">'+msg.role+'</span> <strong>'+escapeHtml(msg.nick)+'</strong>: '+escapeHtml(msg.text)+' <small>'+new Date(msg.timestamp).toLocaleTimeString()+'</small>'; hBox.appendChild(d); hBox.scrollTop=hBox.scrollHeight; } });
+        function sendHMsg(){ let txt=hIn.value.trim(); if(!txt)return; let n=getNick(), r=getRole(); chatNode.set({nick:n,text:txt,role:r,timestamp:Date.now()}); hIn.value=''; }
+        document.getElementById('sendHumanMsg').addEventListener('click',sendHMsg); hIn.addEventListener('keydown',e=>{if(e.ctrlKey&&e.key==='Enter'){e.preventDefault();sendHMsg();}}); upNick();
 
-        const GITHUB_BASE = 'https://jamesgamesfun.github.io';
+        // Number Guess Classic
+        let secretNumber=Math.floor(Math.random()*100)+1, attempts=0;
+        document.getElementById('newGameBtn').addEventListener('click',()=>{ secretNumber=Math.floor(Math.random()*100)+1; attempts=0; document.getElementById('attempts').textContent='0'; document.getElementById('gameHint').textContent=''; });
+        document.getElementById('guessBtn').addEventListener('click',()=>{ let g=parseInt(document.getElementById('guessInput').value); if(isNaN(g)||g<1||g>100){ document.getElementById('gameHint').textContent='Enter 1-100'; return; } attempts++; document.getElementById('attempts').textContent=attempts; if(g===secretNumber){ document.getElementById('gameHint').textContent='🎉 Correct! New game generated.'; secretNumber=Math.floor(Math.random()*100)+1; attempts=0; } else document.getElementById('gameHint').textContent=g<secretNumber?'📈 Too low!':'📉 Too high!'; });
 
-        function setActiveGameButton(activeId) {
-            document.querySelectorAll('.game-toggle button').forEach(b => b.classList.remove('active-game'));
-            document.getElementById(activeId).classList.add('active-game');
-        }
+        // Stopwatch
+        let timerInterval, timerMs=0, timerDisplay=document.getElementById('timerDisplay'); function updateTimer(){ let mins=Math.floor(timerMs/6000), secs=Math.floor((timerMs%6000)/100), cs=timerMs%100; timerDisplay.textContent=`${String(mins).padStart(2,'0')}:${String(secs).padStart(2,'0')}.${String(cs).padStart(2,'0')}`; }
+        document.getElementById('startTimer').onclick=()=>{ if(!timerInterval) timerInterval=setInterval(()=>{ timerMs++; updateTimer(); },10); }; document.getElementById('pauseTimer').onclick=()=>{ clearInterval(timerInterval); timerInterval=null; }; document.getElementById('resetTimer').onclick=()=>{ clearInterval(timerInterval); timerInterval=null; timerMs=0; updateTimer(); };
+        document.getElementById('textCounter').addEventListener('input',function(){ let t=this.value; document.getElementById('wordCount').textContent=t.trim()?t.trim().split(/\s+/).length:0; document.getElementById('charCount').textContent=t.length; });
 
-        function hideAllGamePanels() {
-            document.getElementById('numberGuessGame').style.display = 'none';
-            document.getElementById('jamesDashGame').style.display = 'none';
-            document.getElementById('jamesTagGame').style.display = 'none';
-            document.getElementById('capuchinGame').style.display = 'none';
-            document.getElementById('tungTungBogGame').style.display = 'none';
-        }
+        // Gambling
+        const symbols=['🍒','🍋','🔔','⭐','🍇']; document.getElementById('spinBtn').addEventListener('click',()=>{ if(balance<10){ document.getElementById('slotResult').textContent='Not enough 💎!'; return; } balance-=10; let r1=symbols[Math.floor(Math.random()*symbols.length)], r2=symbols[Math.floor(Math.random()*symbols.length)], r3=symbols[Math.floor(Math.random()*symbols.length)]; document.getElementById('reel1').textContent=r1; document.getElementById('reel2').textContent=r2; document.getElementById('reel3').textContent=r3; if(r1===r2&&r2===r3){ balance+=50; document.getElementById('slotResult').textContent='🎉 JACKPOT! +50 💎'; } else if(r1===r2||r2===r3||r1===r3){ balance+=10; document.getElementById('slotResult').textContent='👍 Two matched! +10 💎'; } else document.getElementById('slotResult').textContent='😿 No match'; document.getElementById('balance').textContent=balance; saveBal(balance); });
 
-        function loadGameInIframe(frameId, url) {
-            hideAllGamePanels();
-            const frame = document.getElementById(frameId);
-            const panel = frame.parentElement;
-            panel.style.display = 'block';
-            if (frame.src !== url) {
-                frame.src = url;
-            }
-            frame.focus();
-        }
+        // Map
+        let map; function initMap(){ if(map) return; map=L.map('map').setView([20,0],2); L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'© OpenStreetMap'}).addTo(map); map.on('click',e=>L.marker([e.latlng.lat,e.latlng.lng]).addTo(map).bindPopup(`📍 ${e.latlng.lat.toFixed(4)}, ${e.latlng.lng.toFixed(4)}`).openPopup()); }
 
-        document.getElementById('showNumberGuess').addEventListener('click', () => {
-            setActiveGameButton('showNumberGuess');
-            hideAllGamePanels();
-            document.getElementById('numberGuessGame').style.display = 'block';
+        // Calculator
+        let calcExpr='', calcDisplay=document.getElementById('calcDisplay'); document.querySelectorAll('.calc-btn').forEach(btn=>btn.addEventListener('click',function(){ let v=this.textContent; if(v==='='){ try{ let res=Function('"use strict";return ('+calcExpr+')')(); calcExpr=isFinite(res)?String(res):'Error'; }catch{ calcExpr='Error'; } calcDisplay.value=calcExpr||'0'; } else if(v==='C'){ calcExpr=''; calcDisplay.value='0'; } else{ if(calcDisplay.value==='0'||calcDisplay.value==='Error') calcExpr=''; calcExpr+=v; calcDisplay.value=calcExpr; } })); document.getElementById('clearCalc').addEventListener('click',()=>{ calcExpr=''; calcDisplay.value='0'; });
+
+        // User System
+        function refUI(){ let cu=getCur(); if(cu&&!isBanned(cu)){ document.getElementById('userLoggedOut').style.display='none'; document.getElementById('userLoggedIn').style.display='block'; document.getElementById('currentUserDisplay').textContent=cu; let role=getCurRole(); document.getElementById('currentUserRole').textContent=role; document.getElementById('currentUserRole').className='role-badge role-'+role; if(role==='Owner'||role==='Admin'){ document.getElementById('adminPanel').style.display='block'; renderUserTable(); } else document.getElementById('adminPanel').style.display='none'; } else { if(cu&&isBanned(cu)) localStorage.removeItem('jamesCur'); document.getElementById('userLoggedOut').style.display='block'; document.getElementById('userLoggedIn').style.display='none'; document.getElementById('adminPanel').style.display='none'; } upNick(); }
+        function renderUserTable(){ let users=getUsers(), bans=getBan(), tbody=document.getElementById('userTableBody'); tbody.innerHTML=''; for(let [name,data] of Object.entries(users)){ let isB=bans.includes(name); let canManage=(getCurRole()==='Owner'||getCurRole()==='Admin') && name!==getCur(); let roleOptions=['User','Mod','Admin']; if(data.role==='Owner') roleOptions.push('Owner'); let row=tbody.insertRow(); row.innerHTML=`<td>${escapeHtml(name)}${isB?' <span class="banned-tag">BANNED</span>':''}</td><td><span class="role-badge role-${data.role}">${data.role}</span></td><td>${isB?'🔴 Banned':'🟢 Active'}</td><td>${canManage?`<select class="roleSelect" data-user="${name}">${roleOptions.map(o=>`<option value="${o}" ${data.role===o?'selected':''}>${o}</option>`).join('')}</select> <button class="small-btn changeRoleBtn" data-user="${name}">Save</button> ${isB?`<button class="small-btn unbanBtn" data-user="${name}">Unban</button>`:`<button class="small-btn banBtn" data-user="${name}">Ban</button>`}`:'—'}</td>`; }
+            document.querySelectorAll('.changeRoleBtn').forEach(b=>b.addEventListener('click',(e)=>{ let u=e.target.dataset.user; let newRole=document.querySelector(`select[data-user="${u}"]`).value; let users=getUsers(); if(!users[u]) return; if(newRole==='Owner' && getCurRole()!=='Owner'){ document.getElementById('userMsg').textContent='Only Owner can set Owner.'; return; } if(users[u].role==='Owner' && newRole!=='Owner' && Object.values(users).filter(u=>u.role==='Owner').length<=1){ document.getElementById('userMsg').textContent='Cannot demote last Owner.'; return; } users[u].role=newRole; saveUsers(users); refUI(); })); document.querySelectorAll('.banBtn').forEach(b=>b.addEventListener('click',(e)=>{ let u=e.target.dataset.user; if(confirm(`Ban ${u}?`)){ banUser(u); if(getCur()===u) localStorage.removeItem('jamesCur'); refUI(); } })); document.querySelectorAll('.unbanBtn').forEach(b=>b.addEventListener('click',(e)=>{ unbanUser(e.target.dataset.user); refUI(); })); }
+        document.getElementById('loginBtn').onclick=()=>{ let u=document.getElementById('usernameInput').value.trim(), p=document.getElementById('passwordInput').value; if(isBanned(u)){ document.getElementById('userMsg').textContent='Banned.'; return; } let us=getUsers(); if(us[u] && us[u].password===p){ localStorage.setItem('jamesCur',u); refUI(); } else document.getElementById('userMsg').textContent='Invalid.'; };
+        document.getElementById('createUserBtn').onclick=()=>{ let u=document.getElementById('usernameInput').value.trim(), p=document.getElementById('passwordInput').value; if(!u||!p){ document.getElementById('userMsg').textContent='Fill both.'; return; } let us=getUsers(); if(us[u]){ document.getElementById('userMsg').textContent='Exists.'; return; } us[u]={password:p, role:'User'}; saveUsers(us); document.getElementById('userMsg').textContent='Account created! You can login.'; };
+        document.getElementById('logoutBtn').onclick=()=>{ localStorage.removeItem('jamesCur'); refUI(); }; refUI();
+
+        // 🎮 FOLDER GAME LOGIC (jamesgamesfun folder picker)
+        let currentGameFiles = []; // { name, file }
+        const folderPicker = document.getElementById('gameFolderPicker');
+        const gameListContainer = document.getElementById('gameListContainer');
+        const gameFrame = document.getElementById('dynamicGameFrame');
+        const activeGameSpan = document.getElementById('activeGameName');
+        const folderStatus = document.getElementById('gamesFolderStatus');
+        const clearFolderBtn = document.getElementById('clearFolderGames');
+
+        function clearGamesList(){ currentGameFiles = []; gameListContainer.innerHTML = ''; folderStatus.innerHTML = ''; activeGameSpan.textContent = 'No game selected'; gameFrame.srcdoc = "<html style='background:#0a0a1a; color:white; display:flex; align-items:center; justify-content:center;'><body><h3>📁 No folder loaded</h3><p>Click 'OPEN FOLDER (jamesgamesfun)' and select your game folder</p></body></html>"; }
+        clearFolderBtn.addEventListener('click', ()=>{ clearGamesList(); folderStatus.innerHTML = '<span style="color:#ffaa66;">🗑️ Cleared all games.</span>'; });
+        
+        folderPicker.addEventListener('change', async (event) => {
+            const files = Array.from(event.target.files);
+            const htmlFiles = files.filter(f => f.name.toLowerCase().endsWith('.html'));
+            if(htmlFiles.length === 0){ folderStatus.innerHTML = '⚠️ No .html files found in selected folder. Make sure you have games.'; gameListContainer.innerHTML = ''; currentGameFiles = []; return; }
+            currentGameFiles = htmlFiles.map(f => ({ name: f.name, file: f }));
+            folderStatus.innerHTML = `✅ Loaded <strong>${currentGameFiles.length}</strong> game(s) from folder. Click any to play!`;
+            renderGameButtons();
         });
 
-        document.getElementById('showJamesDash').addEventListener('click', () => {
-            setActiveGameButton('showJamesDash');
-            loadGameInIframe('jamesDashFrame', GITHUB_BASE + '/gd.html');
-        });
-
-        document.getElementById('showJamesTag').addEventListener('click', () => {
-            setActiveGameButton('showJamesTag');
-            loadGameInIframe('jamesTagFrame', GITHUB_BASE + '/gtag.html');
-        });
-
-        document.getElementById('showCapuchin').addEventListener('click', () => {
-            setActiveGameButton('showCapuchin');
-            loadGameInIframe('capuchinFrame', GITHUB_BASE + '/capuchin.html');
-        });
-
-        document.getElementById('showTungTungBog').addEventListener('click', () => {
-            setActiveGameButton('showTungTungBog');
-            loadGameInIframe('tungTungBogFrame', GITHUB_BASE + '/tungtungbog.html');
-        });
-
-        const chatMsgs = document.getElementById('chatMessages'),
-            chatIn = document.getElementById('chatInput'),
-            sendBtn = document.getElementById('sendChatBtn');
-
-        function sendAI() {
-            let t = chatIn.value.trim();
-            if (!t) return;
-            appMsg('user', t);
-            chatIn.value = '';
-            let thinkingEl = document.createElement('div');
-            thinkingEl.className = 'msg ai';
-            thinkingEl.innerHTML = '<span>⚡ Thinking...</span>';
-            chatMsgs.appendChild(thinkingEl);
-            chatMsgs.scrollTop = chatMsgs.scrollHeight;
-            fetch('https://text.pollinations.ai/openai', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ model: 'openai', messages: [{ role: 'user', content: t }] })
-                })
-                .then(r => r.json()).then(d => { thinkingEl.remove(); let reply = (d.choices && d.choices[0] && d
-                        .choices[0].message && d.choices[0].message.content) || 'Sorry, no response.';
-                    appMsg('ai', reply); })
-                .catch(() => { thinkingEl.remove();
-                    appMsg('ai', 'Error connecting to AI. Please try again.'); });
+        function renderGameButtons(){
+            gameListContainer.innerHTML = '';
+            if(currentGameFiles.length === 0){ gameListContainer.innerHTML = '<div class="badge-neon">✨ No HTML games found. Select folder with .html files.</div>'; return; }
+            currentGameFiles.forEach(game => {
+                const btn = document.createElement('div');
+                btn.className = 'game-card';
+                btn.innerHTML = `🎮 ${escapeHtml(game.name)}`;
+                btn.addEventListener('click', () => loadGameFromFile(game.file, game.name));
+                gameListContainer.appendChild(btn);
+            });
         }
 
-        function appMsg(role, content) {
-            let d = document.createElement('div');
-            d.className = 'msg ' + role;
-            d.innerHTML = '<span>' + content.replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</span>';
-            chatMsgs.appendChild(d);
-            chatMsgs.scrollTop = chatMsgs.scrollHeight;
+        function loadGameFromFile(fileObj, gameName){
+            activeGameSpan.textContent = `🎲 ${escapeHtml(gameName)}`;
+            const reader = new FileReader();
+            reader.onload = function(e){
+                const htmlContent = e.target.result;
+                gameFrame.srcdoc = htmlContent;
+                gameFrame.style.borderColor = '#ff00e5';
+                setTimeout(()=>{ gameFrame.style.borderColor = '#00f0ff'; }, 400);
+            };
+            reader.onerror = function(){ gameFrame.srcdoc = "<html><body style='background:#111;color:red;'><h3>Error loading game.</h3></body></html>"; };
+            reader.readAsText(fileObj);
         }
-        sendBtn.addEventListener('click', sendAI);
-        chatIn.addEventListener('keydown', e => { if (e.key === 'Enter' && e.ctrlKey) { e.preventDefault();
-                sendAI(); } });
-
-        const gun = Gun(['https://gun-manhattan.herokuapp.com/gun']),
-            chatNode = gun.get('james-land-chat');
-
-        function getNick() { let u = getCur(); if (u) return u; return document.getElementById('nicknameInput').value
-                .trim() || 'Guest' + Math.floor(Math.random() * 1000); }
-
-        function getRole() { let u = getCur(); if (u) return getCurRole() || 'User'; return 'Guest'; }
-        const hBox = document.getElementById('humanChatBox'),
-            hIn = document.getElementById('humanMsgInput'),
-            nIn = document.getElementById('nicknameInput'),
-            sNick = document.getElementById('setNickBtn'),
-            nInfo = document.getElementById('chatNickInfo');
-
-        function upNick() {
-            let u = getCur();
-            if (u) {
-                nIn.disabled = true;
-                nIn.value = u;
-                sNick.disabled = true;
-                let r = getCurRole();
-                nInfo.innerHTML = 'Logged in as <strong>' + esc(u) + '</strong> (<span class="role-badge role-' + r +
-                    '">' + r + '</span>)';
-            } else {
-                nIn.disabled = false;
-                sNick.disabled = false;
-                nInfo.innerHTML =
-                    'Set a nickname or <a href="#" onclick="document.querySelector(\'[data-section=users]\').click()">log in</a> to show your role.';
-            }
-        }
-        sNick.addEventListener('click', () => { let n = nIn.value.trim(); if (n) nInfo.innerHTML =
-                'Nickname set to <strong>' + esc(n) + '</strong>';
-            upNick(); });
-        chatNode.map().on((msg, id) => {
-            if (msg && msg.nick && msg.text && msg.timestamp) {
-                if (!document.getElementById('msg-' + id)) {
-                    let d = document.createElement('div');
-                    d.id = 'msg-' + id;
-                    let r = msg.role || 'Guest';
-                    d.className = 'human-msg';
-                    d.innerHTML = '<span class="role-badge role-' + r + '">' + r + '</span> <strong>' + esc(msg
-                        .nick) + '</strong>: ' + esc(msg.text) + ' <small style="color:#888;">' + new Date(msg
-                        .timestamp).toLocaleTimeString() + '</small>';
-                    hBox.appendChild(d);
-                    hBox.scrollTop = hBox.scrollHeight;
-                }
-            }
-        });
-
-        function esc(t) { return t.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g,
-                '&quot;').replace(/'/g, '&#039;'); }
-
-        function sendH() {
-            let t = hIn.value.trim();
-            if (!t) return;
-            let n = getNick(),
-                r = getRole();
-            chatNode.set({ nick: n, text: t, role: r, timestamp: Date.now() });
-            hIn.value = '';
-        }
-        document.getElementById('sendHumanMsg').addEventListener('click', sendH);
-        hIn.addEventListener('keydown', e => { if (e.key === 'Enter' && e.ctrlKey) { e.preventDefault();
-                sendH(); } });
-        upNick();
-
-        let sn = Math.floor(Math.random() * 100) + 1,
-            att = 0;
-        document.getElementById('newGameBtn').addEventListener('click', () => { sn = Math.floor(Math.random() * 100) +
-                1;
-            att = 0;
-            document.getElementById('attempts').textContent = '0';
-            document.getElementById('gameHint').textContent = ''; });
-        document.getElementById('guessBtn').addEventListener('click', () => { let g = parseInt(document.getElementById(
-                'guessInput').value); if (isNaN(g) || g < 1 || g > 100) return document.getElementById('gameHint')
-                .textContent = '1-100 only!';
-            att++;
-            document.getElementById('attempts').textContent = att; if (g === sn) { document.getElementById('gameHint')
-                    .textContent = '🎉 Correct! New game.';
-                sn = Math.floor(Math.random() * 100) + 1;
-                att = 0; } else document.getElementById('gameHint').textContent = g < sn ? '📈 Too low!' :
-                '📉 Too high!'; });
-
-        let ti, tm = 0;
-
-        function ut() { let m = Math.floor(tm / 6000),
-                s = Math.floor((tm % 6000) / 100),
-                cs = tm % 100;
-            document.getElementById('timerDisplay').textContent = String(m).padStart(2, '0') + ':' + String(s).padStart(2,
-                '0') + '.' + String(cs).padStart(2, '0'); }
-        document.getElementById('startTimer').addEventListener('click', () => { if (!ti) ti = setInterval(() => { tm++;
-                ut(); }, 10); });
-        document.getElementById('pauseTimer').addEventListener('click', () => { clearInterval(ti);
-            ti = null; });
-        document.getElementById('resetTimer').addEventListener('click', () => { clearInterval(ti);
-            ti = null;
-            tm = 0;
-            ut(); });
-        document.getElementById('textCounter').addEventListener('input', function() { let t = this.value;
-            document.getElementById('wordCount').textContent = t.trim() ? t.trim().split(/\s+/).length : 0;
-            document.getElementById('charCount').textContent = t.length; });
-
-        const sym = ['🍒', '🍋', '🔔', '⭐', '🍇'];
-        document.getElementById('spinBtn').addEventListener('click', () => { if (balance < 10) { document.getElementById(
-                    'slotResult').textContent = 'Not enough 💎!'; return; }
-            balance -= 10;
-            let r1 = sym[Math.floor(Math.random() * sym.length)],
-                r2 = sym[Math.floor(Math.random() * sym.length)],
-                r3 = sym[Math.floor(Math.random() * sym.length)];
-            document.getElementById('reel1').textContent = r1;
-            document.getElementById('reel2').textContent = r2;
-            document.getElementById('reel3').textContent = r3; if (r1 === r2 && r2 === r3) { balance += 50;
-                document.getElementById('slotResult').textContent = '🎉 JACKPOT! +50 💎'; } else if (r1 === r2 || r2 ===
-                r3 || r1 === r3) { balance += 10;
-                document.getElementById('slotResult').textContent = '👍 Two matched! +10 💎'; } else { document
-                .getElementById('slotResult').textContent = '😿 No match'; }
-            document.getElementById('balance').textContent = balance;
-            saveBal(balance); });
-
-        let map;
-
-        function initMap() { if (map) return;
-            map = L.map('map').setView([20, 0], 2);
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OpenStreetMap' }).addTo(
-                map);
-            map.on('click', e => L.marker([e.latlng.lat, e.latlng.lng]).addTo(map).bindPopup('📍 ' + e.latlng.lat.toFixed(
-                4) + ', ' + e.latlng.lng.toFixed(4)).openPopup()); }
-
-        let cd = document.getElementById('calcDisplay'),
-            ce = '';
-        document.querySelectorAll('.calc-btn').forEach(b => b.addEventListener('click', function() { let v = this
-                .textContent; if (v === '=') { try { let res = Function('"use strict";return (' + ce + ')')();
-                    ce = isFinite(res) ? String(res) : 'Error'; } catch { ce = 'Error'; }
-                cd.value = ce || '0'; } else if (v === 'C') { ce = '';
-                cd.value = '0'; } else { if (cd.value === '0' || cd.value === 'Error') ce = '';
-                ce += v;
-                cd.value = ce; } }));
-        document.getElementById('clearCalc').addEventListener('click', () => { ce = '';
-            cd.value = '0'; });
-
-        const lo = document.getElementById('userLoggedOut'),
-            li = document.getElementById('userLoggedIn'),
-            cud = document.getElementById('currentUserDisplay'),
-            cur = document.getElementById('currentUserRole'),
-            um = document.getElementById('userMsg'),
-            ap = document.getElementById('adminPanel'),
-            utb = document.getElementById('userTableBody');
-
-        function refUI() {
-            let cu = getCur();
-            if (cu) {
-                if (isBanned(cu)) { localStorage.removeItem('jamesCur');
-                    alert('Banned.');
-                    refUI(); return; }
-                lo.style.display = 'none';
-                li.style.display = 'block';
-                cud.textContent = cu;
-                let r = getCurRole();
-                cur.textContent = r;
-                cur.className = 'role-badge role-' + r; if (r === 'Owner' || r === 'Admin') { ap.style.display = 'block';
-                    rt(); } else { ap.style.display = 'none'; }
-            } else { lo.style.display = 'block';
-                li.style.display = 'none';
-                ap.style.display = 'none'; }
-            upNick();
-        }
-
-        function rt() {
-            let us = getUsers(),
-                ban = getBan();
-            utb.innerHTML = '';
-            for (let [n, d] of Object.entries(us)) { let row = document.createElement('tr'),
-                    isB = ban.includes(n),
-                    ro = ['User', 'Mod', 'Admin']; if (d.role === 'Owner') ro.push('Owner');
-                let cu = getCur(),
-                    can = (getCurRole() === 'Owner' || getCurRole() === 'Admin') && n !== cu;
-                row.innerHTML = '<td>' + n + (isB ? ' <span class="banned-tag">BANNED</span>' : '') +
-                    '</td><td><span class="role-badge role-' + d.role + '">' + d.role + '</span></td><td>' + (isB ?
-                        '🔴 Banned' : '🟢 Active') + '</td><td>' + (can ? '<select class="roleSelect" data-username="' +
-                        n + '">' + ro.map(r => '<option value="' + r + '"' + (d.role === r ? ' selected' : '') + '>' + r +
-                        '</option>').join('') +
-                        '</select> <button class="small-btn changeRoleBtn" data-username="' + n +
-                        '">Save</button> ' + (isB ? '<button class="small-btn unbanBtn" data-username="' + n +
-                            '" style="background:#00d1b2;">Unban</button>' :
-                            '<button class="small-btn banBtn" data-username="' + n +
-                            '" style="background:#ff3860;">Ban</button>') : '—') + '</td>';
-                utb.appendChild(row); }
-            document.querySelectorAll('.changeRoleBtn').forEach(b => b.addEventListener('click', e => { let n = e.target
-                    .dataset.username,
-                    s = document.querySelector('select[data-username="' + n + '"]');
-                cr(n, s.value); }));
-            document.querySelectorAll('.banBtn').forEach(b => b.addEventListener('click', e => { let n = e.target.dataset
-                    .username; if (confirm('Ban ' + n + '?')) { banUser(n); if (getCur() === n) localStorage.removeItem(
-                        'jamesCur');
-                    refUI(); } }));
-            document.querySelectorAll('.unbanBtn').forEach(b => b.addEventListener('click', e => { unbanUser(e.target
-                    .dataset.username);
-                refUI(); }));
-        }
-
-        function cr(n, r) {
-            let us = getUsers(); if (!us[n]) return; if (getCur() === n) { alert("Can't change own role."); return; } if (r ===
-                'Owner' && getCurRole() !== 'Owner') { alert('Only Owner can promote to Owner.'); return; } if (us[n].role ===
-                'Owner' && r !== 'Owner' && Object.values(us).filter(u => u.role === 'Owner').length <= 1) { alert(
-                    'Cannot remove last Owner.'); return; }
-            us[n].role = r;
-            saveUsers(us);
-            refUI();
-            um.textContent = 'Role updated.';
-        }
-        document.getElementById('createUserBtn').addEventListener('click', () => { let u = document.getElementById(
-                'usernameInput').value.trim(),
-                p = document.getElementById('passwordInput').value; if (!u || !p) return um.textContent =
-                'Fill all fields.'; let us = getUsers(); if (us[u]) return um.textContent = 'User exists.';
-            us[u] = { password: p, role: 'User' };
-            saveUsers(us);
-            um.textContent = 'Account created!'; });
-        document.getElementById('loginBtn').addEventListener('click', () => { let u = document.getElementById(
-                'usernameInput').value.trim(),
-                p = document.getElementById('passwordInput').value; if (isBanned(u)) return um.textContent = 'Banned.'; let
-                us = getUsers(); if (us[u] && us[u].password === p) { localStorage.setItem('jamesCur', u);
-                refUI();
-                um.textContent = ''; } else um.textContent = 'Invalid credentials.'; });
-        document.getElementById('logoutBtn').addEventListener('click', () => { localStorage.removeItem('jamesCur');
-            refUI(); });
-        refUI();
+        if(!folderPicker.value) clearGamesList();
     </script>
 </body>
 </html>
