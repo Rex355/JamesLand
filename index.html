@@ -485,494 +485,148 @@
     <script src="https://cdn.jsdelivr.net/npm/gun/gun.js">
     </script>
     <script>
-        // Particle background
-        (function() {
-            const c = document.getElementById('particleCanvas'),
-                ctx = c.getContext('2d');
-            let p = [];
+const GITHUB_RAW_BASE =
+'https://raw.githubusercontent.com/jamesgamesfun/jamesgamesfun.github.io/main/jamesgamesfun';
 
-            function rs() {
-                c.width = window.innerWidth;
-                c.height = window.innerHeight;
-            }
-            window.addEventListener('resize', rs);
-            rs();
-            class P {
-                constructor() { this.reset(); }
-                reset() {
-                    this.x = Math.random() * c.width;
-                    this.y = Math.random() * c.height;
-                    this.vx = (Math.random() - 0.5) * 0.5;
-                    this.vy = (Math.random() - 0.5) * 0.5;
-                    this.size = Math.random() * 2 + 0.5;
-                    this.opacity = Math.random() * 0.8 + 0.2;
-                    this.color = Math.random() > 0.5 ? 'rgba(255,0,229,' : 'rgba(0,240,255,';
-                }
-                update() {
-                    this.x += this.vx;
-                    this.y += this.vy;
-                    if (this.x < 0 || this.x > c.width || this.y < 0 || this.y > c.height) this.reset();
-                }
-                draw() {
-                    ctx.beginPath();
-                    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                    ctx.fillStyle = this.color + this.opacity + ')';
-                    ctx.shadowColor = this.color + '1)';
-                    ctx.shadowBlur = 10;
-                    ctx.fill();
-                }
-            }
-            for (let i = 0; i < 100; i++) p.push(new P());
+const games = {
+    jamesDash: "gd.html",
+    jamesTag: "gtag.html",
+    capuchin: "capuchin.html",
+    tungTungBog: "tungtungbog.html"
+};
 
-            function anim() {
-                ctx.clearRect(0, 0, c.width, c.height);
-                p.forEach(x => { x.update();
-                    x.draw(); });
-                requestAnimationFrame(anim);
-            }
-            anim();
-        })();
+function setActiveGameButton(activeId) {
+    document.querySelectorAll('.game-toggle button')
+        .forEach(b => b.classList.remove('active-game'));
 
-        // Slot balance
-        function loadBal() { let s = localStorage.getItem('jamesGems'); return s ? parseInt(s) : 100; }
+    document.getElementById(activeId)
+        .classList.add('active-game');
+}
 
-        function saveBal(b) { localStorage.setItem('jamesGems', b); }
-        let balance = loadBal();
-        document.getElementById('balance').textContent = balance;
+function hideAllGamePanels() {
+    document.getElementById('numberGuessGame').style.display = 'none';
+    document.getElementById('jamesDashGame').style.display = 'none';
+    document.getElementById('jamesTagGame').style.display = 'none';
+    document.getElementById('capuchinGame').style.display = 'none';
+    document.getElementById('tungTungBogGame').style.display = 'none';
+}
 
-        // Ban functions
-        function getBan() { return JSON.parse(localStorage.getItem('jamesBanned') || '[]'); }
+async function loadGame(frameId, panelId, loadingId, fileName, newTabId) {
 
-        function saveBan(l) { localStorage.setItem('jamesBanned', JSON.stringify(l)); }
+    hideAllGamePanels();
 
-        function isBanned(u) { return getBan().includes(u); }
+    document.getElementById(panelId).style.display = 'block';
 
-        function banUser(u) { let b = getBan(); if (!b.includes(u)) { b.push(u);
-                saveBan(b); } }
+    const frame = document.getElementById(frameId);
+    const loading = document.getElementById(loadingId);
+    const newTab = document.getElementById(newTabId);
 
-        function unbanUser(u) { saveBan(getBan().filter(x => x !== u)); }
+    loading.style.display = 'inline';
+    loading.textContent = '⏳ Loading game...';
 
-        // Owner init
-        (function initOwner() {
-            let u = JSON.parse(localStorage.getItem('jamesUsers') || '{}');
-            if (!u['submissive femboy']) { u['submissive femboy'] = { password: 'owner123', role: 'Owner' };
-                localStorage.setItem('jamesUsers', JSON.stringify(u)); }
-        })();
+    const gameUrl = `${GITHUB_RAW_BASE}/${fileName}`;
 
-        function getUsers() { return JSON.parse(localStorage.getItem('jamesUsers') || '{}'); }
+    newTab.href = gameUrl;
 
-        function saveUsers(u) { localStorage.setItem('jamesUsers', JSON.stringify(u)); }
+    try {
 
-        function getCur() { return localStorage.getItem('jamesCur'); }
+        const response = await fetch(gameUrl);
 
-        function getCurRole() { let n = getCur(); if (!n) return null; let u = getUsers(); return u[n] ? u[n].role :
-                null; }
-
-        // Navigation
-        const secs = document.querySelectorAll('.section'),
-            navs = document.querySelectorAll('.nav-btn');
-        navs.forEach(b => b.addEventListener('click', () => {
-            navs.forEach(x => x.classList.remove('active'));
-            b.classList.add('active');
-            let id = b.dataset.section;
-            secs.forEach(s => s.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
-            if (id === 'maps') { setTimeout(() => { initMap(); if (map) map.invalidateSize(); }, 150); }
-            if (id === 'users') refUI();
-            if (id === 'human-chat') upNick();
-            if (id === 'games') {
-                resetGamesToNumberGuess();
-            }
-            if (id === 'jamesgamesfun') { let ifr = document.getElementById('jamesGamesIframe'); if (ifr && ifr
-                    .src !== "https://jamesgamesfun.github.io") ifr.src =
-                    "https://jamesgamesfun.github.io"; }
-        }));
-
-        function resetGamesToNumberGuess() {
-            setActiveGameButton('showNumberGuess');
-            document.getElementById('numberGuessGame').style.display = 'block';
-            document.getElementById('jamesDashGame').style.display = 'none';
-            document.getElementById('jamesTagGame').style.display = 'none';
-            document.getElementById('capuchinGame').style.display = 'none';
-            document.getElementById('tungTungBogGame').style.display = 'none';
+        if (!response.ok) {
+            throw new Error("Game file not found");
         }
 
-        // =============================================
-        // NEW: Fetch game HTML from GitHub raw, create blob, and load into iframe
-        // =============================================
-        // REPLACE this base URL with your own repository structure:
-        // If your repo is "jamesgamesfun.github.io" (GitHub Pages user site), use:
-        const GITHUB_RAW_BASE = 'https://raw.githubusercontent.com/jamesgamesfun/jamesgamesfun.github.io/main';
-        // If your repo is just "jamesgamesfun" (not .github.io), use:
-        // const GITHUB_RAW_BASE = 'https://raw.githubusercontent.com/jamesgamesfun/jamesgamesfun/main';
-        // If your HTML files are inside a folder (e.g., "games"), append that folder:
-        // const GITHUB_RAW_BASE = 'https://raw.githubusercontent.com/jamesgamesfun/jamesgamesfun.github.io/main/games';
+        let html = await response.text();
 
-        function setActiveGameButton(activeId) {
-            document.querySelectorAll('.game-toggle button').forEach(b => b.classList.remove('active-game'));
-            document.getElementById(activeId).classList.add('active-game');
-        }
+        // Fix relative paths automatically
+        html = html.replace(
+            /src="\.\//g,
+            `src="${GITHUB_RAW_BASE}/`
+        );
 
-        function hideAllGamePanels() {
-            document.getElementById('numberGuessGame').style.display = 'none';
-            document.getElementById('jamesDashGame').style.display = 'none';
-            document.getElementById('jamesTagGame').style.display = 'none';
-            document.getElementById('capuchinGame').style.display = 'none';
-            document.getElementById('tungTungBogGame').style.display = 'none';
-        }
+        html = html.replace(
+            /href="\.\//g,
+            `href="${GITHUB_RAW_BASE}/`
+        );
 
-        function loadGameViaBlob(frameId, newTabId, loadingId, fileName) {
-            hideAllGamePanels();
-            const frame = document.getElementById(frameId);
-            const panel = frame.parentElement;
-            panel.style.display = 'block';
-            const loadingEl = document.getElementById(loadingId);
-            const newTabLink = document.getElementById(newTabId);
+        const blob = new Blob([html], { type: 'text/html' });
 
-            // Show loading indicator
-            if (loadingEl) loadingEl.style.display = 'inline';
-            // Reset iframe to about:blank while loading
-            frame.src = 'about:blank';
+        const blobURL = URL.createObjectURL(blob);
 
-            const url = GITHUB_RAW_BASE + '/' + fileName;
-            // Update new tab link to raw URL (so it always works even if iframe doesn't)
-            if (newTabLink) newTabLink.href = url;
+        frame.src = blobURL;
 
-            fetch(url)
-                .then(response => {
-                    if (!response.ok) throw new Error('File not found (' + response.status + ')');
-                    return response.text();
-                })
-                .then(html => {
-                    const blob = new Blob([html], { type: 'text/html' });
-                    const blobUrl = URL.createObjectURL(blob);
-                    frame.src = blobUrl;
-                    // Clean up the blob URL after it's loaded (optional, but good practice)
-                    frame.onload = () => {
-                        URL.revokeObjectURL(blobUrl);
-                        if (loadingEl) loadingEl.style.display = 'none';
-                    };
-                })
-                .catch(err => {
-                    console.error('Failed to load game:', err);
-                    frame.src = 'about:blank';
-                    if (loadingEl) {
-                        loadingEl.textContent = '❌ Error loading game. Check file name or path.';
-                        loadingEl.style.color = '#ff3860';
-                    }
-                });
-        }
+        frame.onload = () => {
+            loading.style.display = 'none';
+        };
 
-        // Game button event listeners
-        document.getElementById('showNumberGuess').addEventListener('click', () => {
-            setActiveGameButton('showNumberGuess');
-            hideAllGamePanels();
-            document.getElementById('numberGuessGame').style.display = 'block';
-        });
+    } catch (err) {
 
-        document.getElementById('showJamesDash').addEventListener('click', () => {
-            setActiveGameButton('showJamesDash');
-            loadGameViaBlob('jamesDashFrame', 'jamesDashNewTab', 'jamesDashLoading', 'gd.html');
-        });
+        console.error(err);
 
-        document.getElementById('showJamesTag').addEventListener('click', () => {
-            setActiveGameButton('showJamesTag');
-            loadGameViaBlob('jamesTagFrame', 'jamesTagNewTab', 'jamesTagLoading', 'gtag.html');
-        });
+        loading.style.display = 'inline';
 
-        document.getElementById('showCapuchin').addEventListener('click', () => {
-            setActiveGameButton('showCapuchin');
-            loadGameViaBlob('capuchinFrame', 'capuchinNewTab', 'capuchinLoading', 'capuchin.html');
-        });
+        loading.textContent =
+            '❌ Could not load game. Check filename/path.';
+    }
+}
 
-        document.getElementById('showTungTungBog').addEventListener('click', () => {
-            setActiveGameButton('showTungTungBog');
-            loadGameViaBlob('tungTungBogFrame', 'tungTungBogNewTab', 'tungTungBogLoading', 'tungtungbog.html');
-        });
+/* BUTTON EVENTS */
 
-        // Fullscreen toggle
-        function toggleFullscreen(frameId) {
-            const iframe = document.getElementById(frameId);
-            if (iframe) {
-                if (iframe.requestFullscreen) {
-                    iframe.requestFullscreen();
-                } else if (iframe.webkitRequestFullscreen) { /* Safari */
-                    iframe.webkitRequestFullscreen();
-                } else if (iframe.msRequestFullscreen) { /* IE11 */
-                    iframe.msRequestFullscreen();
-                }
-            }
-        }
+document.getElementById('showJamesDash')
+.addEventListener('click', () => {
 
-        // AI Chat
-        const chatMsgs = document.getElementById('chatMessages'),
-            chatIn = document.getElementById('chatInput'),
-            sendBtn = document.getElementById('sendChatBtn');
+    setActiveGameButton('showJamesDash');
 
-        function sendAI() {
-            let t = chatIn.value.trim();
-            if (!t) return;
-            appMsg('user', t);
-            chatIn.value = '';
-            let thinkingEl = document.createElement('div');
-            thinkingEl.className = 'msg ai';
-            thinkingEl.innerHTML = '<span>⚡ Thinking...</span>';
-            chatMsgs.appendChild(thinkingEl);
-            chatMsgs.scrollTop = chatMsgs.scrollHeight;
-            fetch('https://text.pollinations.ai/openai', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ model: 'openai', messages: [{ role: 'user', content: t }] })
-                })
-                .then(r => r.json()).then(d => { thinkingEl.remove(); let reply = (d.choices && d.choices[0] && d
-                        .choices[0].message && d.choices[0].message.content) || 'Sorry, no response.';
-                    appMsg('ai', reply); })
-                .catch(() => { thinkingEl.remove();
-                    appMsg('ai', 'Error connecting to AI. Please try again.'); });
-        }
+    loadGame(
+        'jamesDashFrame',
+        'jamesDashGame',
+        'jamesDashLoading',
+        games.jamesDash,
+        'jamesDashNewTab'
+    );
+});
 
-        function appMsg(role, content) {
-            let d = document.createElement('div');
-            d.className = 'msg ' + role;
-            d.innerHTML = '<span>' + content.replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</span>';
-            chatMsgs.appendChild(d);
-            chatMsgs.scrollTop = chatMsgs.scrollHeight;
-        }
-        sendBtn.addEventListener('click', sendAI);
-        chatIn.addEventListener('keydown', e => { if (e.key === 'Enter' && e.ctrlKey) { e.preventDefault();
-                sendAI(); } });
+document.getElementById('showJamesTag')
+.addEventListener('click', () => {
 
-        // Human Chat (GUN)
-        const gun = Gun(['https://gun-manhattan.herokuapp.com/gun']),
-            chatNode = gun.get('james-land-chat');
+    setActiveGameButton('showJamesTag');
 
-        function getNick() { let u = getCur(); if (u) return u; return document.getElementById('nicknameInput').value
-                .trim() || 'Guest' + Math.floor(Math.random() * 1000); }
+    loadGame(
+        'jamesTagFrame',
+        'jamesTagGame',
+        'jamesTagLoading',
+        games.jamesTag,
+        'jamesTagNewTab'
+    );
+});
 
-        function getRole() { let u = getCur(); if (u) return getCurRole() || 'User'; return 'Guest'; }
-        const hBox = document.getElementById('humanChatBox'),
-            hIn = document.getElementById('humanMsgInput'),
-            nIn = document.getElementById('nicknameInput'),
-            sNick = document.getElementById('setNickBtn'),
-            nInfo = document.getElementById('chatNickInfo');
+document.getElementById('showCapuchin')
+.addEventListener('click', () => {
 
-        function upNick() {
-            let u = getCur();
-            if (u) {
-                nIn.disabled = true;
-                nIn.value = u;
-                sNick.disabled = true;
-                let r = getCurRole();
-                nInfo.innerHTML = 'Logged in as <strong>' + esc(u) + '</strong> (<span class="role-badge role-' + r +
-                    '">' + r + '</span>)';
-            } else {
-                nIn.disabled = false;
-                sNick.disabled = false;
-                nInfo.innerHTML =
-                    'Set a nickname or <a href="#" onclick="document.querySelector(\'[data-section=users]\').click()">log in</a> to show your role.';
-            }
-        }
-        sNick.addEventListener('click', () => { let n = nIn.value.trim(); if (n) nInfo.innerHTML =
-                'Nickname set to <strong>' + esc(n) + '</strong>';
-            upNick(); });
-        chatNode.map().on((msg, id) => {
-            if (msg && msg.nick && msg.text && msg.timestamp) {
-                if (!document.getElementById('msg-' + id)) {
-                    let d = document.createElement('div');
-                    d.id = 'msg-' + id;
-                    let r = msg.role || 'Guest';
-                    d.className = 'human-msg';
-                    d.innerHTML = '<span class="role-badge role-' + r + '">' + r + '</span> <strong>' + esc(msg
-                        .nick) + '</strong>: ' + esc(msg.text) + ' <small style="color:#888;">' + new Date(msg
-                        .timestamp).toLocaleTimeString() + '</small>';
-                    hBox.appendChild(d);
-                    hBox.scrollTop = hBox.scrollHeight;
-                }
-            }
-        });
+    setActiveGameButton('showCapuchin');
 
-        function esc(t) { return t.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g,
-                '&quot;').replace(/'/g, '&#039;'); }
+    loadGame(
+        'capuchinFrame',
+        'capuchinGame',
+        'capuchinLoading',
+        games.capuchin,
+        'capuchinNewTab'
+    );
+});
 
-        function sendH() {
-            let t = hIn.value.trim();
-            if (!t) return;
-            let n = getNick(),
-                r = getRole();
-            chatNode.set({ nick: n, text: t, role: r, timestamp: Date.now() });
-            hIn.value = '';
-        }
-        document.getElementById('sendHumanMsg').addEventListener('click', sendH);
-        hIn.addEventListener('keydown', e => { if (e.key === 'Enter' && e.ctrlKey) { e.preventDefault();
-                sendH(); } });
-        upNick();
+document.getElementById('showTungTungBog')
+.addEventListener('click', () => {
 
-        // Number guess
-        let sn = Math.floor(Math.random() * 100) + 1,
-            att = 0;
-        document.getElementById('newGameBtn').addEventListener('click', () => { sn = Math.floor(Math.random() * 100) +
-                1;
-            att = 0;
-            document.getElementById('attempts').textContent = '0';
-            document.getElementById('gameHint').textContent = ''; });
-        document.getElementById('guessBtn').addEventListener('click', () => { let g = parseInt(document.getElementById(
-                'guessInput').value); if (isNaN(g) || g < 1 || g > 100) return document.getElementById('gameHint')
-                .textContent = '1-100 only!';
-            att++;
-            document.getElementById('attempts').textContent = att; if (g === sn) { document.getElementById('gameHint')
-                    .textContent = '🎉 Correct! New game.';
-                sn = Math.floor(Math.random() * 100) + 1;
-                att = 0; } else document.getElementById('gameHint').textContent = g < sn ? '📈 Too low!' :
-                '📉 Too high!'; });
+    setActiveGameButton('showTungTungBog');
 
-        // Stopwatch
-        let ti, tm = 0;
-
-        function ut() { let m = Math.floor(tm / 6000),
-                s = Math.floor((tm % 6000) / 100),
-                cs = tm % 100;
-            document.getElementById('timerDisplay').textContent = String(m).padStart(2, '0') + ':' + String(s).padStart(2,
-                '0') + '.' + String(cs).padStart(2, '0'); }
-        document.getElementById('startTimer').addEventListener('click', () => { if (!ti) ti = setInterval(() => { tm++;
-                ut(); }, 10); });
-        document.getElementById('pauseTimer').addEventListener('click', () => { clearInterval(ti);
-            ti = null; });
-        document.getElementById('resetTimer').addEventListener('click', () => { clearInterval(ti);
-            ti = null;
-            tm = 0;
-            ut(); });
-        document.getElementById('textCounter').addEventListener('input', function() { let t = this.value;
-            document.getElementById('wordCount').textContent = t.trim() ? t.trim().split(/\s+/).length : 0;
-            document.getElementById('charCount').textContent = t.length; });
-
-        // Slots
-        const sym = ['🍒', '🍋', '🔔', '⭐', '🍇'];
-        document.getElementById('spinBtn').addEventListener('click', () => { if (balance < 10) { document.getElementById(
-                    'slotResult').textContent = 'Not enough 💎!'; return; }
-            balance -= 10;
-            let r1 = sym[Math.floor(Math.random() * sym.length)],
-                r2 = sym[Math.floor(Math.random() * sym.length)],
-                r3 = sym[Math.floor(Math.random() * sym.length)];
-            document.getElementById('reel1').textContent = r1;
-            document.getElementById('reel2').textContent = r2;
-            document.getElementById('reel3').textContent = r3; if (r1 === r2 && r2 === r3) { balance += 50;
-                document.getElementById('slotResult').textContent = '🎉 JACKPOT! +50 💎'; } else if (r1 === r2 || r2 ===
-                r3 || r1 === r3) { balance += 10;
-                document.getElementById('slotResult').textContent = '👍 Two matched! +10 💎'; } else { document
-                .getElementById('slotResult').textContent = '😿 No match'; }
-            document.getElementById('balance').textContent = balance;
-            saveBal(balance); });
-
-        // Map
-        let map;
-
-        function initMap() { if (map) return;
-            map = L.map('map').setView([20, 0], 2);
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OpenStreetMap' }).addTo(
-                map);
-            map.on('click', e => L.marker([e.latlng.lat, e.latlng.lng]).addTo(map).bindPopup('📍 ' + e.latlng.lat.toFixed(
-                4) + ', ' + e.latlng.lng.toFixed(4)).openPopup()); }
-
-        // Calculator
-        let cd = document.getElementById('calcDisplay'),
-            ce = '';
-        document.querySelectorAll('.calc-btn').forEach(b => b.addEventListener('click', function() { let v = this
-                .textContent; if (v === '=') { try { let res = Function('"use strict";return (' + ce + ')')();
-                    ce = isFinite(res) ? String(res) : 'Error'; } catch { ce = 'Error'; }
-                cd.value = ce || '0'; } else if (v === 'C') { ce = '';
-                cd.value = '0'; } else { if (cd.value === '0' || cd.value === 'Error') ce = '';
-                ce += v;
-                cd.value = ce; } }));
-        document.getElementById('clearCalc').addEventListener('click', () => { ce = '';
-            cd.value = '0'; });
-
-        // User system
-        const lo = document.getElementById('userLoggedOut'),
-            li = document.getElementById('userLoggedIn'),
-            cud = document.getElementById('currentUserDisplay'),
-            cur = document.getElementById('currentUserRole'),
-            um = document.getElementById('userMsg'),
-            ap = document.getElementById('adminPanel'),
-            utb = document.getElementById('userTableBody');
-
-        function refUI() {
-            let cu = getCur();
-            if (cu) {
-                if (isBanned(cu)) { localStorage.removeItem('jamesCur');
-                    alert('Banned.');
-                    refUI(); return; }
-                lo.style.display = 'none';
-                li.style.display = 'block';
-                cud.textContent = cu;
-                let r = getCurRole();
-                cur.textContent = r;
-                cur.className = 'role-badge role-' + r; if (r === 'Owner' || r === 'Admin') { ap.style.display = 'block';
-                    rt(); } else { ap.style.display = 'none'; }
-            } else { lo.style.display = 'block';
-                li.style.display = 'none';
-                ap.style.display = 'none'; }
-            upNick();
-        }
-
-        function rt() {
-            let us = getUsers(),
-                ban = getBan();
-            utb.innerHTML = '';
-            for (let [n, d] of Object.entries(us)) { let row = document.createElement('tr'),
-                    isB = ban.includes(n),
-                    ro = ['User', 'Mod', 'Admin']; if (d.role === 'Owner') ro.push('Owner');
-                let cu = getCur(),
-                    can = (getCurRole() === 'Owner' || getCurRole() === 'Admin') && n !== cu;
-                row.innerHTML = '<td>' + n + (isB ? ' <span class="banned-tag">BANNED</span>' : '') +
-                    '</td><td><span class="role-badge role-' + d.role + '">' + d.role + '</span></td><td>' + (isB ?
-                        '🔴 Banned' : '🟢 Active') + '</td><td>' + (can ? '<select class="roleSelect" data-username="' +
-                        n + '">' + ro.map(r => '<option value="' + r + '"' + (d.role === r ? ' selected' : '') + '>' + r +
-                        '</option>').join('') +
-                        '</select> <button class="small-btn changeRoleBtn" data-username="' + n +
-                        '">Save</button> ' + (isB ? '<button class="small-btn unbanBtn" data-username="' + n +
-                            '" style="background:#00d1b2;">Unban</button>' :
-                            '<button class="small-btn banBtn" data-username="' + n +
-                            '" style="background:#ff3860;">Ban</button>') : '—') + '</td>';
-                utb.appendChild(row); }
-            document.querySelectorAll('.changeRoleBtn').forEach(b => b.addEventListener('click', e => { let n = e.target
-                    .dataset.username,
-                    s = document.querySelector('select[data-username="' + n + '"]');
-                cr(n, s.value); }));
-            document.querySelectorAll('.banBtn').forEach(b => b.addEventListener('click', e => { let n = e.target.dataset
-                    .username; if (confirm('Ban ' + n + '?')) { banUser(n); if (getCur() === n) localStorage.removeItem(
-                        'jamesCur');
-                    refUI(); } }));
-            document.querySelectorAll('.unbanBtn').forEach(b => b.addEventListener('click', e => { unbanUser(e.target
-                    .dataset.username);
-                refUI(); }));
-        }
-
-        function cr(n, r) {
-            let us = getUsers(); if (!us[n]) return; if (getCur() === n) { alert("Can't change own role."); return; } if (r ===
-                'Owner' && getCurRole() !== 'Owner') { alert('Only Owner can promote to Owner.'); return; } if (us[n].role ===
-                'Owner' && r !== 'Owner' && Object.values(us).filter(u => u.role === 'Owner').length <= 1) { alert(
-                    'Cannot remove last Owner.'); return; }
-            us[n].role = r;
-            saveUsers(us);
-            refUI();
-            um.textContent = 'Role updated.';
-        }
-        document.getElementById('createUserBtn').addEventListener('click', () => { let u = document.getElementById(
-                'usernameInput').value.trim(),
-                p = document.getElementById('passwordInput').value; if (!u || !p) return um.textContent =
-                'Fill all fields.'; let us = getUsers(); if (us[u]) return um.textContent = 'User exists.';
-            us[u] = { password: p, role: 'User' };
-            saveUsers(us);
-            um.textContent = 'Account created!'; });
-        document.getElementById('loginBtn').addEventListener('click', () => { let u = document.getElementById(
-                'usernameInput').value.trim(),
-                p = document.getElementById('passwordInput').value; if (isBanned(u)) return um.textContent = 'Banned.'; let
-                us = getUsers(); if (us[u] && us[u].password === p) { localStorage.setItem('jamesCur', u);
-                refUI();
-                um.textContent = ''; } else um.textContent = 'Invalid credentials.'; });
-        document.getElementById('logoutBtn').addEventListener('click', () => { localStorage.removeItem('jamesCur');
-            refUI(); });
-        refUI();
-    </script>
+    loadGame(
+        'tungTungBogFrame',
+        'tungTungBogGame',
+        'tungTungBogLoading',
+        games.tungTungBog,
+        'tungTungBogNewTab'
+    );
+});
+</script>
 </body>
 </html>
