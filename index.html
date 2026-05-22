@@ -300,22 +300,21 @@
                 </div>
             </div>
         </div>
-        <!-- GAMES SECTION – default loads /jamesgamesfun/game.html -->
+        <!-- GAMES SECTION – uses /jamesgamesfun/ files -->
         <div id="games" class="section">
             <div class="card">
                 <h3>🎮 JamesGamesFun</h3>
                 <div class="game-loader">
                     <select id="gameSelect">
-                        <option value="game.html" selected>Game (default)</option>
-                        <option value="geometrydash.html">Geometry Dash</option>
-                        <option value="gorillatag.html">Gorilla Tag</option>
-                        <option value="flappybird.html">Flappy Bird</option>
-                        <option value="breakout.html">Breakout</option>
+                        <option value="tungtungbog.html" selected>tungtungbog.html</option>
+                        <option value="gtag.html">gtag.html</option>
+                        <option value="gd.html">gd.html</option>
+                        <option value="Capuchin.html">Capuchin.html</option>
                     </select>
                     <input type="text" id="customGameInput" placeholder="Or type filename (e.g. mygame.html)">
                     <button id="loadGameBtn">Load Game</button>
                 </div>
-                <iframe id="jamesFunFrame" class="game-frame" src="/jamesgamesfun/game.html" allow="autoplay; fullscreen; accelerometer; gyroscope; xr-spatial-tracking"></iframe>
+                <iframe id="jamesFunFrame" class="game-frame" src="/jamesgamesfun/tungtungbog.html" allow="autoplay; fullscreen; accelerometer; gyroscope; xr-spatial-tracking"></iframe>
             </div>
         </div>
         <div id="tools" class="section">
@@ -433,10 +432,9 @@
             if(id==='maps')setTimeout(initMap,100);
             if(id==='users')refUI();
             if(id==='human-chat')upNick();
-            // When navigating to games, keep the currently loaded iframe (or default)
         }));
 
-        // JamesGamesFun loader – default is already loaded in the iframe src
+        // JamesGamesFun loader – default is tungtungbog.html
         document.getElementById('loadGameBtn').addEventListener('click', ()=>{
             const select = document.getElementById('gameSelect');
             const custom = document.getElementById('customGameInput').value.trim();
