@@ -455,7 +455,7 @@
                     <button id="showNumberGuess" class="active-game">🧠 Number Guess</button>
                     <button id="showJamesDash">🔷 James Dash</button>
                     <button id="showJamesTag">🦍 James Tag</button>
-                    <button id="showCapuchin">🐒 Juhuchin</button>
+                    <button id="showCapuchin">🐒 Juhpachuchin</button>
                     <button id="showTungTungBog">🥁 JungJungBOG</button>
                 </div>
                 <div id="numberGuessGame">
@@ -468,7 +468,7 @@
                 </div>
                 <div id="jamesDashGame" style="display:none;"><iframe id="jamesDashFrame" class="game-frame" allow="autoplay; fullscreen"></iframe></div>
                 <div id="jamesTagGame" style="display:none;"><iframe id="jamesTagFrame" class="game-frame" allow="autoplay; fullscreen"></iframe></div>
-                <div id="capuchinGame" style="display:none;"><iframe id="capuchinFrame" class="game-frame" allow="autoplay; fullscreen"></iframe></div>
+                <div id="capuchinGame" style="display:none;"><iframe id="capuchinFrame" class="game-frame" src="https://truffled.lol/games/CapuchinBog/index.html" allow="autoplay; fullscreen; web-share"></iframe></div>
                 <div id="tungTungBogGame" style="display:none;"><iframe id="tungTungBogFrame" class="game-frame" allow="autoplay; fullscreen"></iframe></div>
             </div>
         </div>
@@ -614,7 +614,7 @@
             }
             animateParticles();
 
-            // ---------- FIXED NAVIGATION (SIMPLE & RELIABLE) ----------
+            // ---------- FIXED NAVIGATION ----------
             const sections = {
                 'ai-chat': document.getElementById('ai-chat'),
                 'human-chat': document.getElementById('human-chat'),
@@ -629,57 +629,33 @@
             const navButtons = document.querySelectorAll('.nav-btn');
             
             function activateSection(sectionId) {
-                // Hide all sections
-                Object.values(sections).forEach(sec => {
-                    if (sec) sec.classList.remove('active');
-                });
-                // Show selected
+                Object.values(sections).forEach(sec => { if (sec) sec.classList.remove('active'); });
                 if (sections[sectionId]) sections[sectionId].classList.add('active');
-                // Update button active states
                 navButtons.forEach(btn => {
-                    if (btn.dataset.section === sectionId) {
-                        btn.classList.add('active');
-                    } else {
-                        btn.classList.remove('active');
-                    }
+                    if (btn.dataset.section === sectionId) btn.classList.add('active');
+                    else btn.classList.remove('active');
                 });
-                // Special handling for map
                 if (sectionId === 'maps') {
                     setTimeout(() => {
-                        if (typeof window.map !== 'undefined' && window.map) {
-                            window.map.invalidateSize();
-                        } else {
-                            initMap();
-                        }
+                        if (typeof window.map !== 'undefined' && window.map) window.map.invalidateSize();
+                        else initMap();
                     }, 100);
                 }
-                if (sectionId === 'human-chat') {
-                    renderChatHistory();
-                    updateNickUI();
-                }
-                if (sectionId === 'users') {
-                    refreshUserUI();
-                }
+                if (sectionId === 'human-chat') { renderChatHistory(); updateNickUI(); }
+                if (sectionId === 'users') refreshUserUI();
             }
             
-            // Attach click listeners to all nav buttons
             navButtons.forEach(btn => {
                 btn.addEventListener('click', function(e) {
                     e.preventDefault();
                     const sectionId = this.getAttribute('data-section');
-                    if (sectionId && sections[sectionId]) {
-                        activateSection(sectionId);
-                    }
+                    if (sectionId && sections[sectionId]) activateSection(sectionId);
                 });
             });
             
-            // Ensure the initially active section is set correctly
             const activeNav = document.querySelector('.nav-btn.active');
-            if (activeNav && activeNav.dataset.section) {
-                activateSection(activeNav.dataset.section);
-            } else {
-                activateSection('ai-chat');
-            }
+            if (activeNav && activeNav.dataset.section) activateSection(activeNav.dataset.section);
+            else activateSection('ai-chat');
             
             // ---------- AI CHAT ----------
             const chatMessages = document.getElementById('chatMessages');
@@ -835,8 +811,12 @@
             document.getElementById('showNumberGuess').onclick = () => { hideAllGameDivs(); document.getElementById('numberGuessGame').style.display = 'block'; setActiveGameBtn('showNumberGuess'); };
             document.getElementById('showJamesDash').onclick = () => { hideAllGameDivs(); const frame = document.getElementById('jamesDashFrame'); frame.parentElement.style.display = 'block'; if(frame.src !== gameBase+'/gd.html') frame.src = gameBase+'/gd.html'; setActiveGameBtn('showJamesDash'); };
             document.getElementById('showJamesTag').onclick = () => { hideAllGameDivs(); const frame = document.getElementById('jamesTagFrame'); frame.parentElement.style.display = 'block'; if(frame.src !== gameBase+'/gtag.html') frame.src = gameBase+'/gtag.html'; setActiveGameBtn('showJamesTag'); };
-            document.getElementById('showCapuchin').onclick = () => { hideAllGameDivs(); const frame = document.getElementById('capuchinFrame'); frame.parentElement.style.display = 'block'; if(frame.src !== gameBase+'/capuchin.html') frame.src = gameBase+'/capuchin.html'; setActiveGameBtn('showCapuchin'); };
+            document.getElementById('showCapuchin').onclick = () => { hideAllGameDivs(); const frame = document.getElementById('capuchinFrame'); frame.parentElement.style.display = 'block'; // Already has the truffled URL, just ensure it's loaded
+                if(!frame.src || frame.src !== 'https://truffled.lol/games/CapuchinBog/index.html') frame.src = 'https://truffled.lol/games/CapuchinBog/index.html';
+                setActiveGameBtn('showCapuchin');
+            };
             document.getElementById('showTungTungBog').onclick = () => { hideAllGameDivs(); const frame = document.getElementById('tungTungBogFrame'); frame.parentElement.style.display = 'block'; if(frame.src !== gameBase+'/tungtungbog.html') frame.src = gameBase+'/tungtungbog.html'; setActiveGameBtn('showTungTungBog'); };
+            
             // Number guess game
             let secret = Math.floor(Math.random()*100)+1, attempts = 0;
             document.getElementById('guessBtn').onclick = () => {
