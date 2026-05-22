@@ -10,7 +10,6 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            user-select: none; /* avoid accidental drag, but fine */
         }
 
         :root {
@@ -572,7 +571,7 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
         (function() {
-            // ---- PARTICLES ----
+            // ---------- PARTICLES ----------
             const canvas = document.getElementById('particleCanvas');
             const ctx = canvas.getContext('2d');
             let particles = [];
@@ -583,8 +582,8 @@
                 constructor() {
                     this.x = Math.random() * canvas.width;
                     this.y = Math.random() * canvas.height;
-                    this.vx = (Math.random() - 0.5) * 0.6;
-                    this.vy = (Math.random() - 0.5) * 0.6;
+                    this.vx = (Math.random() - 0.5) * 0.5;
+                    this.vy = (Math.random() - 0.5) * 0.5;
                     this.size = Math.random() * 2 + 0.8;
                     this.alpha = Math.random() * 0.6 + 0.2;
                     this.color = Math.random() > 0.5 ? 'rgba(255,0,229,' : 'rgba(0,240,255,';
@@ -615,32 +614,84 @@
             }
             animateParticles();
 
-            // ---- SECTION SWITCHING (FIXED) ----
-            const sections = document.querySelectorAll('.section');
-            const navBtns = document.querySelectorAll('.nav-btn');
-            function switchSection(sectionId) {
-                sections.forEach(sec => sec.classList.remove('active'));
-                const target = document.getElementById(sectionId);
-                if (target) target.classList.add('active');
-                navBtns.forEach(btn => btn.classList.remove('active'));
-                const activeNav = Array.from(navBtns).find(btn => btn.dataset.section === sectionId);
-                if (activeNav) activeNav.classList.add('active');
-                // re-trigger map resize if needed
-                if (sectionId === 'maps' && window.map) setTimeout(() => window.map.invalidateSize(), 100);
-                if (sectionId === 'human-chat') renderChatHistory();
-                if (sectionId === 'users') refreshUserUI();
+            // ---------- FIXED NAVIGATION (SIMPLE & RELIABLE) ----------
+            const sections = {
+                'ai-chat': document.getElementById('ai-chat'),
+                'human-chat': document.getElementById('human-chat'),
+                'games': document.getElementById('games'),
+                'jamesgamesfun': document.getElementById('jamesgamesfun'),
+                'tools': document.getElementById('tools'),
+                'gambling': document.getElementById('gambling'),
+                'maps': document.getElementById('maps'),
+                'calc': document.getElementById('calc'),
+                'users': document.getElementById('users')
+            };
+            const navButtons = document.querySelectorAll('.nav-btn');
+            
+            function activateSection(sectionId) {
+                // Hide all sections
+                Object.values(sections).forEach(sec => {
+                    if (sec) sec.classList.remove('active');
+                });
+                // Show selected
+                if (sections[sectionId]) sections[sectionId].classList.add('active');
+                // Update button active states
+                navButtons.forEach(btn => {
+                    if (btn.dataset.section === sectionId) {
+                        btn.classList.add('active');
+                    } else {
+                        btn.classList.remove('active');
+                    }
+                });
+                // Special handling for map
+                if (sectionId === 'maps') {
+                    setTimeout(() => {
+                        if (typeof window.map !== 'undefined' && window.map) {
+                            window.map.invalidateSize();
+                        } else {
+                            initMap();
+                        }
+                    }, 100);
+                }
+                if (sectionId === 'human-chat') {
+                    renderChatHistory();
+                    updateNickUI();
+                }
+                if (sectionId === 'users') {
+                    refreshUserUI();
+                }
             }
-            navBtns.forEach(btn => {
-                btn.addEventListener('click', (e) => {
+            
+            // Attach click listeners to all nav buttons
+            navButtons.forEach(btn => {
+                btn.addEventListener('click', function(e) {
                     e.preventDefault();
-                    const secId = btn.dataset.section;
-                    if (secId) switchSection(secId);
+                    const sectionId = this.getAttribute('data-section');
+                    if (sectionId && sections[sectionId]) {
+                        activateSection(sectionId);
+                    }
                 });
             });
-
-            // ---- AI CHAT ----
+            
+            // Ensure the initially active section is set correctly
+            const activeNav = document.querySelector('.nav-btn.active');
+            if (activeNav && activeNav.dataset.section) {
+                activateSection(activeNav.dataset.section);
+            } else {
+                activateSection('ai-chat');
+            }
+            
+            // ---------- AI CHAT ----------
             const chatMessages = document.getElementById('chatMessages');
             const chatInput = document.getElementById('chatInput');
+            function escapeHtml(str) { 
+                return str.replace(/[&<>]/g, function(m) {
+                    if(m === '&') return '&amp;';
+                    if(m === '<') return '&lt;';
+                    if(m === '>') return '&gt;';
+                    return m;
+                });
+            }
             function addAIMessage(role, text) {
                 const div = document.createElement('div');
                 div.className = `msg ${role}`;
@@ -648,7 +699,6 @@
                 chatMessages.appendChild(div);
                 chatMessages.scrollTop = chatMessages.scrollHeight;
             }
-            function escapeHtml(str) { return str.replace(/[&<>]/g, function(m) { if(m === '&') return '&amp;'; if(m === '<') return '&lt;'; if(m === '>') return '&gt;'; return m;}); }
             async function sendAIChat() {
                 const text = chatInput.value.trim();
                 if (!text) return;
@@ -676,8 +726,8 @@
             }
             document.getElementById('sendChatBtn').addEventListener('click', sendAIChat);
             chatInput.addEventListener('keydown', (e) => { if(e.ctrlKey && e.key === 'Enter') sendAIChat(); });
-
-            // ---- HUMAN CHAT (LOCALSTORAGE) ----
+            
+            // ---------- HUMAN CHAT (localStorage) ----------
             let localMessages = [];
             const CHAT_KEY = 'jamesHumanChat';
             function loadLocalChat() {
@@ -748,7 +798,7 @@
                     nickInput.value = saved;
                     infoSpan.innerHTML = `👤 Guest mode — <a href="#" id="goToLoginLink">Login</a> to unlock roles.`;
                     const link = document.getElementById('goToLoginLink');
-                    if(link) link.onclick = (e) => { e.preventDefault(); switchSection('users'); };
+                    if(link) link.onclick = (e) => { e.preventDefault(); activateSection('users'); };
                 }
             }
             function setGuestNick() {
@@ -768,8 +818,8 @@
             document.getElementById('clearChatHistoryBtn').addEventListener('click', clearAllChat);
             loadLocalChat();
             updateNickUI();
-
-            // ---- GAMES LOGIC ----
+            
+            // ---------- GAMES ----------
             const gameBase = 'https://jamesgamesfun.github.io';
             function hideAllGameDivs() {
                 document.getElementById('numberGuessGame').style.display = 'none';
@@ -787,7 +837,7 @@
             document.getElementById('showJamesTag').onclick = () => { hideAllGameDivs(); const frame = document.getElementById('jamesTagFrame'); frame.parentElement.style.display = 'block'; if(frame.src !== gameBase+'/gtag.html') frame.src = gameBase+'/gtag.html'; setActiveGameBtn('showJamesTag'); };
             document.getElementById('showCapuchin').onclick = () => { hideAllGameDivs(); const frame = document.getElementById('capuchinFrame'); frame.parentElement.style.display = 'block'; if(frame.src !== gameBase+'/capuchin.html') frame.src = gameBase+'/capuchin.html'; setActiveGameBtn('showCapuchin'); };
             document.getElementById('showTungTungBog').onclick = () => { hideAllGameDivs(); const frame = document.getElementById('tungTungBogFrame'); frame.parentElement.style.display = 'block'; if(frame.src !== gameBase+'/tungtungbog.html') frame.src = gameBase+'/tungtungbog.html'; setActiveGameBtn('showTungTungBog'); };
-            // number guess game
+            // Number guess game
             let secret = Math.floor(Math.random()*100)+1, attempts = 0;
             document.getElementById('guessBtn').onclick = () => {
                 let guess = parseInt(document.getElementById('guessInput').value);
@@ -800,16 +850,16 @@
             };
             document.getElementById('newGameBtn').onclick = () => { secret = Math.floor(Math.random()*100)+1; attempts = 0; document.getElementById('attempts').innerText = '0'; document.getElementById('gameHint').innerText = ''; document.getElementById('guessInput').value = ''; };
             hideAllGameDivs(); document.getElementById('numberGuessGame').style.display = 'block';
-
-            // ---- STOPWATCH ----
+            
+            // ---------- STOPWATCH & COUNTER ----------
             let timerInterval = null, timerMs = 0;
             function updateTimerDisplay() { let m = Math.floor(timerMs/60000), s = Math.floor((timerMs%60000)/1000), cs = Math.floor((timerMs%1000)/10); document.getElementById('timerDisplay').innerText = `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}.${cs.toString().padStart(2,'0')}`; }
             document.getElementById('startTimer').onclick = () => { if(!timerInterval) timerInterval = setInterval(() => { timerMs += 10; updateTimerDisplay(); }, 10); };
             document.getElementById('pauseTimer').onclick = () => { clearInterval(timerInterval); timerInterval = null; };
             document.getElementById('resetTimer').onclick = () => { clearInterval(timerInterval); timerInterval = null; timerMs = 0; updateTimerDisplay(); };
             document.getElementById('textCounter').addEventListener('input', function() { let txt = this.value; document.getElementById('wordCount').innerText = txt.trim() ? txt.trim().split(/\s+/).length : 0; document.getElementById('charCount').innerText = txt.length; });
-
-            // ---- GAMBLING SLOTS ----
+            
+            // ---------- GAMBLING SLOTS ----------
             let bal = (() => { let b = localStorage.getItem('jamesGems'); return b ? parseInt(b) : 100; })();
             document.getElementById('balance').innerText = bal;
             const symbols = ['🍒','🍋','🔔','⭐','🍇'];
@@ -824,17 +874,18 @@
                 document.getElementById('balance').innerText = bal;
                 localStorage.setItem('jamesGems', bal);
             };
-
-            // ---- MAP ----
+            
+            // ---------- MAP ----------
             let map = null;
-            function initMap() { if(map) return; map = L.map('map').setView([20,0],2); L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OpenStreetMap' }).addTo(map); map.on('click', (e) => L.marker([e.latlng.lat, e.latlng.lng]).addTo(map).bindPopup(`📍 ${e.latlng.lat.toFixed(4)}, ${e.latlng.lng.toFixed(4)}`).openPopup()); }
-            setTimeout(() => { if(document.getElementById('maps').classList.contains('active')) initMap(); }, 200);
+            function initMap() {
+                if(map) return;
+                map = L.map('map').setView([20,0],2);
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OpenStreetMap' }).addTo(map);
+                map.on('click', (e) => L.marker([e.latlng.lat, e.latlng.lng]).addTo(map).bindPopup(`📍 ${e.latlng.lat.toFixed(4)}, ${e.latlng.lng.toFixed(4)}`).openPopup());
+            }
             window.initMap = initMap;
-            // manual map init when section becomes active
-            const observer = new MutationObserver(() => { if(document.getElementById('maps').classList.contains('active') && !map) initMap(); });
-            observer.observe(document.getElementById('maps'), { attributes: true, attributeFilter: ['class'] });
-
-            // ---- CALCULATOR ----
+            
+            // ---------- CALCULATOR ----------
             let calcExpr = '';
             const calcDisplay = document.getElementById('calcDisplay');
             document.querySelectorAll('.calc-btn').forEach(btn => {
@@ -846,8 +897,8 @@
                 });
             });
             document.getElementById('clearCalc').addEventListener('click', () => { calcExpr = ''; calcDisplay.value = '0'; });
-
-            // ---- USER SYSTEM ----
+            
+            // ---------- USER SYSTEM ----------
             function getUsers() { return JSON.parse(localStorage.getItem('jamesUsers') || '{}'); }
             function saveUsers(users) { localStorage.setItem('jamesUsers', JSON.stringify(users)); }
             function getBanList() { return JSON.parse(localStorage.getItem('jamesBanned') || '[]'); }
@@ -870,7 +921,7 @@
                     document.getElementById('userLoggedIn').style.display = 'none';
                     document.getElementById('adminPanel').style.display = 'none';
                 }
-                updateNickUI();
+                if(typeof updateNickUI === 'function') updateNickUI();
             }
             function renderAdminTable() {
                 let users = getUsers(), bans = getBanList();
