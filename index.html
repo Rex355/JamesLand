@@ -3,10 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>⚡ JAMES LAND · Portal to JamesGamesFun · AI · Chat · Hub</title>
+    <title>⚡ JAMES LAND · Portal to AI · Chat · Games · Hub</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <!-- Socket.IO replaces GUN for real-time human chat -->
-    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
     <style>
         :root {
             --bg: #04040d;
@@ -248,9 +246,8 @@
         ::-webkit-scrollbar-thumb { background: var(--neon); border-radius: 10px; box-shadow: 0 0 10px var(--neon); }
         .link-glow { color: var(--neon2); text-decoration: none; font-weight: bold; border-bottom: 1px dashed; }
         .link-glow:hover { text-shadow: 0 0 6px var(--neon2); }
-        #chatStatus { font-size: 0.8rem; padding: 4px 12px; border-radius: 20px; display: inline-block; margin-bottom: 10px; }
-        #chatStatus.connected { background: rgba(0, 209, 178, 0.2); color: #00d1b2; border: 1px solid #00d1b2; }
-        #chatStatus.disconnected { background: rgba(255, 56, 96, 0.2); color: #ff3860; border: 1px solid #ff3860; }
+        #chatStatus { font-size: 0.8rem; padding: 4px 12px; border-radius: 20px; display: inline-block; margin-bottom: 10px; background: rgba(0, 209, 178, 0.2); color: #00d1b2; border: 1px solid #00d1b2; }
+        .chat-clear-btn { background: #3a3a6a; box-shadow: none; margin-left: 12px; padding: 8px 20px; font-size: 0.75rem; }
     </style>
 </head>
 <body>
@@ -266,7 +263,7 @@
         <button class="nav-btn" data-section="maps"><span class="icon">🗺️</span> Maps</button>
         <button class="nav-btn" data-section="calc"><span class="icon">🔢</span> Calculator</button>
         <button class="nav-btn" data-section="users"><span class="icon">👤</span> Users</button>
-        <div style="margin-top: auto; font-size: 0.75rem; color: #555; text-align: center;">Flask · Socket.IO · OSM · GitHub Pages</div>
+        <div style="margin-top: auto; font-size: 0.75rem; color: #555; text-align: center;">✨ Offline Chat · AI · Full Hub</div>
     </div>
     <div class="main">
         <!-- AI CHAT -->
@@ -281,15 +278,16 @@
             </div>
         </div>
 
-        <!-- HUMAN CHAT — now powered by Flask + Socket.IO -->
+        <!-- HUMAN CHAT - Fully static, localStorage powered, works without server -->
         <div id="human-chat" class="section">
             <div class="card">
-                <h3>💬 Human Chat</h3>
-                <div id="chatStatus" class="disconnected">⚫ Connecting...</div>
+                <h3>💬 Human Chat · Local Vault</h3>
+                <div id="chatStatus" class="connected">💾 Offline mode · messages saved in browser</div>
                 <p style="color:#aaa;margin-bottom:10px;"><span id="chatNickInfo"></span></p>
                 <div class="flex-row">
-                    <input type="text" id="nicknameInput" placeholder="Nickname" style="max-width:200px;">
+                    <input type="text" id="nicknameInput" placeholder="Nickname (guest mode)" style="max-width:200px;">
                     <button id="setNickBtn">Set Nick</button>
+                    <button id="clearChatHistoryBtn" class="chat-clear-btn" style="background:#4a2a5a;">🗑️ Clear Chat</button>
                 </div>
                 <div class="chat-box" id="humanChatBox"></div>
                 <div class="flex-row" style="align-items:flex-end;">
@@ -420,7 +418,7 @@
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
-        // ── PARTICLES ──────────────────────────────────────────────────────────
+        // ── PARTICLES ─────────────────────────
         (function() {
             const c = document.getElementById('particleCanvas'), ctx = c.getContext('2d');
             let p = [];
@@ -442,11 +440,10 @@
             anim();
         })();
 
-        // ── HELPERS ────────────────────────────────────────────────────────────
-        function esc(t) { return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;'); }
-        function loadBal() { let s = localStorage.getItem('jamesGems'); return s ? parseInt(s) : 100; }
+        // ── GLOBAL HELPERS (Users, balance, etc) ──────────────────
+        function esc(t) { return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+        let balance = (() => { let s = localStorage.getItem('jamesGems'); return s ? parseInt(s) : 100; })();
         function saveBal(b) { localStorage.setItem('jamesGems', b); }
-        let balance = loadBal();
         document.getElementById('balance').textContent = balance;
 
         function getBan() { return JSON.parse(localStorage.getItem('jamesBanned') || '[]'); }
@@ -454,18 +451,17 @@
         function isBanned(u) { return getBan().includes(u); }
         function banUser(u) { let b = getBan(); if (!b.includes(u)) { b.push(u); saveBan(b); } }
         function unbanUser(u) { saveBan(getBan().filter(x => x !== u)); }
-
+        
         (function initOwner() {
             let u = JSON.parse(localStorage.getItem('jamesUsers') || '{}');
             if (!u['submissive femboy']) { u['submissive femboy'] = { password: 'owner123', role: 'Owner' }; localStorage.setItem('jamesUsers', JSON.stringify(u)); }
         })();
-
         function getUsers() { return JSON.parse(localStorage.getItem('jamesUsers') || '{}'); }
         function saveUsers(u) { localStorage.setItem('jamesUsers', JSON.stringify(u)); }
         function getCur() { return localStorage.getItem('jamesCur'); }
         function getCurRole() { let n = getCur(); if (!n) return null; let u = getUsers(); return u[n] ? u[n].role : null; }
 
-        // ── NAV ────────────────────────────────────────────────────────────────
+        // ── NAVIGATION ──────────────────────────────────────
         const secs = document.querySelectorAll('.section'), navs = document.querySelectorAll('.nav-btn');
         navs.forEach(b => b.addEventListener('click', () => {
             navs.forEach(x => x.classList.remove('active'));
@@ -473,122 +469,134 @@
             let id = b.dataset.section;
             secs.forEach(s => s.classList.remove('active'));
             document.getElementById(id).classList.add('active');
-            if (id === 'maps') { setTimeout(() => { initMap(); if (map) map.invalidateSize(); }, 150); }
+            if (id === 'maps') { setTimeout(() => { if (typeof map !== 'undefined') map.invalidateSize(); else initMap(); }, 150); }
             if (id === 'users') refUI();
-            if (id === 'human-chat') upNick();
+            if (id === 'human-chat') { renderChatHistory(); updateNickInfo(); }
             if (id === 'games') resetGamesToNumberGuess();
             if (id === 'jamesgamesfun') { let ifr = document.getElementById('jamesGamesIframe'); if (ifr && ifr.src !== "https://jamesgamesfun.github.io") ifr.src = "https://jamesgamesfun.github.io"; }
         }));
 
-        // ── AI CHAT ────────────────────────────────────────────────────────────
+        // ── AI CHAT ────────────────────────────────────────
         const chatMsgs = document.getElementById('chatMessages'), chatIn = document.getElementById('chatInput');
-        function sendAI() {
-            let t = chatIn.value.trim(); if (!t) return;
-            appMsg('user', t); chatIn.value = '';
-            let thinkingEl = document.createElement('div');
-            thinkingEl.className = 'msg ai'; thinkingEl.innerHTML = '<span>⚡ Thinking...</span>';
-            chatMsgs.appendChild(thinkingEl); chatMsgs.scrollTop = chatMsgs.scrollHeight;
-            fetch('https://text.pollinations.ai/openai', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ model: 'openai', messages: [{ role: 'user', content: t }] }) })
-                .then(r => r.json()).then(d => { thinkingEl.remove(); let reply = (d.choices && d.choices[0] && d.choices[0].message && d.choices[0].message.content) || 'Sorry, no response.'; appMsg('ai', reply); })
-                .catch(() => { thinkingEl.remove(); appMsg('ai', 'Error connecting to AI. Please try again.'); });
-        }
         function appMsg(role, content) {
             let d = document.createElement('div'); d.className = 'msg ' + role;
             d.innerHTML = '<span>' + content.replace(/</g,'&lt;').replace(/>/g,'&gt;') + '</span>';
             chatMsgs.appendChild(d); chatMsgs.scrollTop = chatMsgs.scrollHeight;
         }
+        async function sendAI() {
+            let t = chatIn.value.trim(); if (!t) return;
+            appMsg('user', t); chatIn.value = '';
+            let thinkingEl = document.createElement('div'); thinkingEl.className = 'msg ai'; thinkingEl.innerHTML = '<span>⚡ Thinking...</span>';
+            chatMsgs.appendChild(thinkingEl); chatMsgs.scrollTop = chatMsgs.scrollHeight;
+            try {
+                let res = await fetch('https://text.pollinations.ai/openai', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ model: 'openai', messages: [{ role: 'user', content: t }] }) });
+                let data = await res.json();
+                thinkingEl.remove();
+                let reply = (data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content) || 'Sorry, no response.';
+                appMsg('ai', reply);
+            } catch(e) { thinkingEl.remove(); appMsg('ai', 'Error connecting to AI.'); }
+        }
         document.getElementById('sendChatBtn').addEventListener('click', sendAI);
         chatIn.addEventListener('keydown', e => { if (e.key === 'Enter' && e.ctrlKey) { e.preventDefault(); sendAI(); } });
 
-        // ── HUMAN CHAT — Flask + Socket.IO ─────────────────────────────────────
-        // ⚠️  Change this URL to your deployed server address once hosted!
-        const SERVER_URL = 'http://localhost:5000';
+        // ── HUMAN CHAT (FULLY LOCAL, NO SERVER) ───────────────
+        const CHAT_STORAGE_KEY = 'jamesHumanChatHistory';
+        let chatMessages = [];
 
-        const hBox = document.getElementById('humanChatBox');
-        const hIn  = document.getElementById('humanMsgInput');
-        const nIn  = document.getElementById('nicknameInput');
-        const sNick = document.getElementById('setNickBtn');
-        const nInfo = document.getElementById('chatNickInfo');
-        const statusEl = document.getElementById('chatStatus');
-
-        const socket = io(SERVER_URL, { transports: ['websocket', 'polling'] });
-
-        socket.on('connect', () => {
-            statusEl.textContent = '🟢 Connected';
-            statusEl.className = 'connected';
-        });
-        socket.on('disconnect', () => {
-            statusEl.textContent = '🔴 Disconnected';
-            statusEl.className = 'disconnected';
-        });
-
-        // Receive chat history when we first connect
-        socket.on('history', (messages) => {
-            hBox.innerHTML = '';
-            messages.forEach(renderHumanMsg);
-        });
-
-        // Receive a new message in real time
-        socket.on('new_message', (msg) => {
-            renderHumanMsg(msg);
-        });
-
-        function renderHumanMsg(msg) {
-            if (!msg || !msg.text) return;
-            let d = document.createElement('div');
-            d.className = 'human-msg';
-            let role = msg.role || 'Guest';
-            d.innerHTML =
-                '<span class="role-badge role-' + esc(role) + '">' + esc(role) + '</span> ' +
-                '<strong>' + esc(msg.username || 'Anonymous') + '</strong>: ' +
-                esc(msg.text) +
-                ' <small style="color:#888;">' + (msg.timestamp || '') + '</small>';
-            hBox.appendChild(d);
-            hBox.scrollTop = hBox.scrollHeight;
+        function loadChatFromStorage() {
+            let stored = localStorage.getItem(CHAT_STORAGE_KEY);
+            if (stored) { chatMessages = JSON.parse(stored); } else { chatMessages = [{ username: '👑 System', text: '✨ Welcome to local human chat! Messages are saved in your browser.', role: 'Owner', timestamp: new Date().toLocaleTimeString() }]; saveChatToStorage(); }
         }
-
-        function getNick() { let u = getCur(); if (u) return u; return nIn.value.trim() || 'Guest' + Math.floor(Math.random() * 1000); }
-        function getRole() { let u = getCur(); if (u) return getCurRole() || 'User'; return 'Guest'; }
-
-        function upNick() {
-            let u = getCur();
-            if (u) {
-                nIn.disabled = true; nIn.value = u; sNick.disabled = true;
-                let r = getCurRole();
-                nInfo.innerHTML = 'Logged in as <strong>' + esc(u) + '</strong> (<span class="role-badge role-' + r + '">' + r + '</span>)';
+        function saveChatToStorage() { localStorage.setItem(CHAT_STORAGE_KEY, JSON.stringify(chatMessages.slice(-200))); }
+        function renderChatHistory() {
+            const container = document.getElementById('humanChatBox');
+            if (!container) return;
+            container.innerHTML = '';
+            chatMessages.forEach(msg => {
+                let div = document.createElement('div'); div.className = 'human-msg';
+                div.innerHTML = `<span class="role-badge role-${esc(msg.role || 'Guest')}">${esc(msg.role || 'Guest')}</span> <strong>${esc(msg.username)}</strong>: ${esc(msg.text)} <small style="color:#888;">${msg.timestamp || ''}</small>`;
+                container.appendChild(div);
+            });
+            container.scrollTop = container.scrollHeight;
+        }
+        function addChatMessage(username, text, role) {
+            let newMsg = { username, text, role: role || 'Guest', timestamp: new Date().toLocaleTimeString() };
+            chatMessages.push(newMsg);
+            saveChatToStorage();
+            renderChatHistory();
+        }
+        function getCurrentChatNickname() {
+            let loggedUser = getCur();
+            if (loggedUser) return loggedUser;
+            let localNick = localStorage.getItem('jamesGuestNick');
+            if (localNick && localNick.trim()) return localNick.trim();
+            return 'Guest' + Math.floor(Math.random() * 1000);
+        }
+        function getCurrentChatRole() {
+            let loggedUser = getCur();
+            if (loggedUser) return getCurRole() || 'User';
+            return 'Guest';
+        }
+        function updateNickInfo() {
+            let nickSpan = document.getElementById('chatNickInfo');
+            let nickInput = document.getElementById('nicknameInput');
+            let loggedUser = getCur();
+            if (loggedUser) {
+                nickInput.disabled = true; nickInput.value = loggedUser;
+                document.getElementById('setNickBtn').disabled = true;
+                nickSpan.innerHTML = `✅ Logged in as <strong>${esc(loggedUser)}</strong> (${getCurRole()}) — using account role.`;
             } else {
-                nIn.disabled = false; sNick.disabled = false;
-                nInfo.innerHTML = 'Set a nickname or <a href="#" onclick="document.querySelector(\'[data-section=users]\').click()">log in</a> to show your role.';
+                nickInput.disabled = false; document.getElementById('setNickBtn').disabled = false;
+                let saved = localStorage.getItem('jamesGuestNick') || '';
+                nickInput.value = saved;
+                nickSpan.innerHTML = `👤 Guest mode — set nickname below. <a href="#" onclick="document.querySelector('[data-section=users]').click(); return false;">Log in</a> to unlock roles.`;
             }
         }
-        sNick.addEventListener('click', () => { let n = nIn.value.trim(); if (n) nInfo.innerHTML = 'Nickname set to <strong>' + esc(n) + '</strong>'; upNick(); });
-
-        function sendH() {
-            let t = hIn.value.trim(); if (!t) return;
-            socket.emit('send_message', { username: getNick(), text: t, role: getRole() });
-            hIn.value = '';
+        function setGuestNick() {
+            let newNick = document.getElementById('nicknameInput').value.trim();
+            if (newNick) localStorage.setItem('jamesGuestNick', newNick);
+            else localStorage.removeItem('jamesGuestNick');
+            updateNickInfo();
+            renderChatHistory();
         }
-        document.getElementById('sendHumanMsg').addEventListener('click', sendH);
-        hIn.addEventListener('keydown', e => { if (e.key === 'Enter' && e.ctrlKey) { e.preventDefault(); sendH(); } });
-        upNick();
+        function sendHumanMessage() {
+            let textarea = document.getElementById('humanMsgInput');
+            let msg = textarea.value.trim();
+            if (!msg) return;
+            let username = getCurrentChatNickname();
+            let role = getCurrentChatRole();
+            addChatMessage(username, msg, role);
+            textarea.value = '';
+        }
+        function clearChatHistory() {
+            if (confirm('⚠️ Delete all chat messages? This action is permanent.')) {
+                chatMessages = [{ username: 'System', text: 'Chat history cleared.', role: 'Admin', timestamp: new Date().toLocaleTimeString() }];
+                saveChatToStorage();
+                renderChatHistory();
+            }
+        }
+        document.getElementById('sendHumanMsg').addEventListener('click', sendHumanMessage);
+        document.getElementById('setNickBtn').addEventListener('click', setGuestNick);
+        document.getElementById('clearChatHistoryBtn').addEventListener('click', clearChatHistory);
+        document.getElementById('humanMsgInput').addEventListener('keydown', e => { if (e.key === 'Enter' && e.ctrlKey) { e.preventDefault(); sendHumanMessage(); } });
+        loadChatFromStorage(); renderChatHistory(); updateNickInfo();
 
-        // ── GAMES ──────────────────────────────────────────────────────────────
+        // ── GAMES LOGIC ─────────────────────────────────────
         const GITHUB_BASE = 'https://jamesgamesfun.github.io';
         function setActiveGameButton(id) { document.querySelectorAll('.game-toggle button').forEach(b => b.classList.remove('active-game')); document.getElementById(id).classList.add('active-game'); }
         function hideAllGamePanels() { ['numberGuessGame','jamesDashGame','jamesTagGame','capuchinGame','tungTungBogGame'].forEach(id => document.getElementById(id).style.display = 'none'); }
         function resetGamesToNumberGuess() { setActiveGameButton('showNumberGuess'); hideAllGamePanels(); document.getElementById('numberGuessGame').style.display = 'block'; }
-        function loadGameInIframe(frameId, url) { hideAllGamePanels(); const frame = document.getElementById(frameId); frame.parentElement.style.display = 'block'; if (frame.src !== url) frame.src = url; frame.focus(); }
+        function loadGameInIframe(frameId, url) { hideAllGamePanels(); const frame = document.getElementById(frameId); frame.parentElement.style.display = 'block'; if (frame.src !== url) frame.src = url; }
         document.getElementById('showNumberGuess').addEventListener('click', () => { setActiveGameButton('showNumberGuess'); hideAllGamePanels(); document.getElementById('numberGuessGame').style.display = 'block'; });
         document.getElementById('showJamesDash').addEventListener('click', () => { setActiveGameButton('showJamesDash'); loadGameInIframe('jamesDashFrame', GITHUB_BASE + '/gd.html'); });
         document.getElementById('showJamesTag').addEventListener('click', () => { setActiveGameButton('showJamesTag'); loadGameInIframe('jamesTagFrame', GITHUB_BASE + '/gtag.html'); });
         document.getElementById('showCapuchin').addEventListener('click', () => { setActiveGameButton('showCapuchin'); loadGameInIframe('capuchinFrame', GITHUB_BASE + '/capuchin.html'); });
         document.getElementById('showTungTungBog').addEventListener('click', () => { setActiveGameButton('showTungTungBog'); loadGameInIframe('tungTungBogFrame', GITHUB_BASE + '/tungtungbog.html'); });
-
         let sn = Math.floor(Math.random() * 100) + 1, att = 0;
         document.getElementById('newGameBtn').addEventListener('click', () => { sn = Math.floor(Math.random() * 100) + 1; att = 0; document.getElementById('attempts').textContent = '0'; document.getElementById('gameHint').textContent = ''; });
         document.getElementById('guessBtn').addEventListener('click', () => { let g = parseInt(document.getElementById('guessInput').value); if (isNaN(g) || g < 1 || g > 100) return document.getElementById('gameHint').textContent = '1-100 only!'; att++; document.getElementById('attempts').textContent = att; if (g === sn) { document.getElementById('gameHint').textContent = '🎉 Correct! New game.'; sn = Math.floor(Math.random() * 100) + 1; att = 0; } else document.getElementById('gameHint').textContent = g < sn ? '📈 Too low!' : '📉 Too high!'; });
 
-        // ── STOPWATCH ──────────────────────────────────────────────────────────
+        // ── STOPWATCH & COUNTER ─────────────────────────────
         let ti, tm = 0;
         function ut() { let m = Math.floor(tm/6000), s = Math.floor((tm%6000)/100), cs = tm%100; document.getElementById('timerDisplay').textContent = String(m).padStart(2,'0')+':'+String(s).padStart(2,'0')+'.'+String(cs).padStart(2,'0'); }
         document.getElementById('startTimer').addEventListener('click', () => { if (!ti) ti = setInterval(() => { tm++; ut(); }, 10); });
@@ -596,52 +604,26 @@
         document.getElementById('resetTimer').addEventListener('click', () => { clearInterval(ti); ti = null; tm = 0; ut(); });
         document.getElementById('textCounter').addEventListener('input', function() { let t = this.value; document.getElementById('wordCount').textContent = t.trim() ? t.trim().split(/\s+/).length : 0; document.getElementById('charCount').textContent = t.length; });
 
-        // ── SLOTS ──────────────────────────────────────────────────────────────
+        // ── SLOTS ────────────────────────────────────────
         const sym = ['🍒','🍋','🔔','⭐','🍇'];
         document.getElementById('spinBtn').addEventListener('click', () => { if (balance < 10) { document.getElementById('slotResult').textContent = 'Not enough 💎!'; return; } balance -= 10; let r1 = sym[Math.floor(Math.random()*sym.length)], r2 = sym[Math.floor(Math.random()*sym.length)], r3 = sym[Math.floor(Math.random()*sym.length)]; document.getElementById('reel1').textContent = r1; document.getElementById('reel2').textContent = r2; document.getElementById('reel3').textContent = r3; if (r1===r2&&r2===r3) { balance+=50; document.getElementById('slotResult').textContent='🎉 JACKPOT! +50 💎'; } else if (r1===r2||r2===r3||r1===r3) { balance+=10; document.getElementById('slotResult').textContent='👍 Two matched! +10 💎'; } else { document.getElementById('slotResult').textContent='😿 No match'; } document.getElementById('balance').textContent = balance; saveBal(balance); });
 
-        // ── MAP ────────────────────────────────────────────────────────────────
+        // ── MAP ──────────────────────────────────────────
         let map;
         function initMap() { if (map) return; map = L.map('map').setView([20,0],2); L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'© OpenStreetMap'}).addTo(map); map.on('click', e => L.marker([e.latlng.lat,e.latlng.lng]).addTo(map).bindPopup('📍 '+e.latlng.lat.toFixed(4)+', '+e.latlng.lng.toFixed(4)).openPopup()); }
+        setTimeout(() => { if(document.getElementById('maps').classList.contains('active')) initMap(); }, 200);
 
-        // ── CALCULATOR ─────────────────────────────────────────────────────────
+        // ── CALCULATOR ────────────────────────────────────
         let cd = document.getElementById('calcDisplay'), ce = '';
         document.querySelectorAll('.calc-btn').forEach(b => b.addEventListener('click', function() { let v = this.textContent; if (v==='=') { try { let res = Function('"use strict";return ('+ce+')')(); ce = isFinite(res) ? String(res) : 'Error'; } catch { ce='Error'; } cd.value = ce||'0'; } else if (v==='C') { ce=''; cd.value='0'; } else { if (cd.value==='0'||cd.value==='Error') ce=''; ce+=v; cd.value=ce; } }));
         document.getElementById('clearCalc').addEventListener('click', () => { ce=''; cd.value='0'; });
 
-        // ── USERS ──────────────────────────────────────────────────────────────
-        const lo=document.getElementById('userLoggedOut'), li=document.getElementById('userLoggedIn'), cud=document.getElementById('currentUserDisplay'), cur=document.getElementById('currentUserRole'), um=document.getElementById('userMsg'), ap=document.getElementById('adminPanel'), utb=document.getElementById('userTableBody');
-        function refUI() {
-            let cu = getCur();
-            if (cu) {
-                if (isBanned(cu)) { localStorage.removeItem('jamesCur'); alert('Banned.'); refUI(); return; }
-                lo.style.display='none'; li.style.display='block'; cud.textContent=cu;
-                let r = getCurRole(); cur.textContent=r; cur.className='role-badge role-'+r;
-                if (r==='Owner'||r==='Admin') { ap.style.display='block'; rt(); } else { ap.style.display='none'; }
-            } else { lo.style.display='block'; li.style.display='none'; ap.style.display='none'; }
-            upNick();
-        }
-        function rt() {
-            let us=getUsers(), ban=getBan(); utb.innerHTML='';
-            for (let [n,d] of Object.entries(us)) {
-                let row=document.createElement('tr'), isB=ban.includes(n), ro=['User','Mod','Admin'];
-                if (d.role==='Owner') ro.push('Owner');
-                let cu=getCur(), can=(getCurRole()==='Owner'||getCurRole()==='Admin')&&n!==cu;
-                row.innerHTML='<td>'+n+(isB?' <span class="banned-tag">BANNED</span>':'')+'</td><td><span class="role-badge role-'+d.role+'">'+d.role+'</span></td><td>'+(isB?'🔴 Banned':'🟢 Active')+'</td><td>'+(can?'<select class="roleSelect" data-username="'+n+'">'+ro.map(r=>'<option value="'+r+'"'+(d.role===r?' selected':'')+'>'+r+'</option>').join('')+'</select> <button class="small-btn changeRoleBtn" data-username="'+n+'">Save</button> '+(isB?'<button class="small-btn unbanBtn" data-username="'+n+'" style="background:#00d1b2;">Unban</button>':'<button class="small-btn banBtn" data-username="'+n+'" style="background:#ff3860;">Ban</button>'):'—')+'</td>';
-                utb.appendChild(row);
-            }
-            document.querySelectorAll('.changeRoleBtn').forEach(b => b.addEventListener('click', e => { let n=e.target.dataset.username, s=document.querySelector('select[data-username="'+n+'"]'); cr(n,s.value); }));
-            document.querySelectorAll('.banBtn').forEach(b => b.addEventListener('click', e => { let n=e.target.dataset.username; if (confirm('Ban '+n+'?')) { banUser(n); if (getCur()===n) localStorage.removeItem('jamesCur'); refUI(); } }));
-            document.querySelectorAll('.unbanBtn').forEach(b => b.addEventListener('click', e => { unbanUser(e.target.dataset.username); refUI(); }));
-        }
-        function cr(n,r) {
-            let us=getUsers(); if (!us[n]) return; if (getCur()===n) { alert("Can't change own role."); return; }
-            if (r==='Owner'&&getCurRole()!=='Owner') { alert('Only Owner can promote to Owner.'); return; }
-            if (us[n].role==='Owner'&&r!=='Owner'&&Object.values(us).filter(u=>u.role==='Owner').length<=1) { alert('Cannot remove last Owner.'); return; }
-            us[n].role=r; saveUsers(us); refUI(); um.textContent='Role updated.';
-        }
-        document.getElementById('createUserBtn').addEventListener('click', () => { let u=document.getElementById('usernameInput').value.trim(), p=document.getElementById('passwordInput').value; if (!u||!p) return um.textContent='Fill all fields.'; let us=getUsers(); if (us[u]) return um.textContent='User exists.'; us[u]={password:p,role:'User'}; saveUsers(us); um.textContent='Account created!'; });
-        document.getElementById('loginBtn').addEventListener('click', () => { let u=document.getElementById('usernameInput').value.trim(), p=document.getElementById('passwordInput').value; if (isBanned(u)) return um.textContent='Banned.'; let us=getUsers(); if (us[u]&&us[u].password===p) { localStorage.setItem('jamesCur',u); refUI(); um.textContent=''; } else um.textContent='Invalid credentials.'; });
+        // ── USER SYSTEM ───────────────────────────────────
+        function refUI() { let cu = getCur(); if (cu && !isBanned(cu)) { document.getElementById('userLoggedOut').style.display='none'; document.getElementById('userLoggedIn').style.display='block'; document.getElementById('currentUserDisplay').textContent=cu; let r = getCurRole(); document.getElementById('currentUserRole').textContent=r; document.getElementById('currentUserRole').className='role-badge role-'+r; if (r==='Owner'||r==='Admin') { document.getElementById('adminPanel').style.display='block'; renderUserTable(); } else document.getElementById('adminPanel').style.display='none'; } else { document.getElementById('userLoggedOut').style.display='block'; document.getElementById('userLoggedIn').style.display='none'; document.getElementById('adminPanel').style.display='none'; } updateNickInfo(); }
+        function renderUserTable() { let us=getUsers(), ban=getBan(); let tbody=document.getElementById('userTableBody'); tbody.innerHTML=''; for(let [n,d] of Object.entries(us)) { let row=tbody.insertRow(); row.innerHTML=`<td>${esc(n)}${ban.includes(n)?' <span class="banned-tag">BANNED</span>':''}</td><td><span class="role-badge role-${d.role}">${d.role}</span></td><td>${ban.includes(n)?'🔴 Banned':'🟢 Active'}</td><td>${(getCurRole()==='Owner'||getCurRole()==='Admin') && n!==getCur() ? `<select data-user="${esc(n)}" class="roleSelect">${['User','Mod','Admin','Owner'].map(r=>`<option value="${r}" ${d.role===r?'selected':''}>${r}</option>`).join('')}</select> <button class="saveRoleBtn" data-user="${esc(n)}">Save</button> ${ban.includes(n)?`<button class="unbanBtn" data-user="${esc(n)}">Unban</button>`:`<button class="banBtn" data-user="${esc(n)}">Ban</button>`}` : '—'}</td>`; }
+        document.querySelectorAll('.saveRoleBtn, .banBtn, .unbanBtn').forEach(b=>b.removeEventListener); document.getElementById('userTableBody').addEventListener('click', (e) => { if(e.target.classList.contains('saveRoleBtn')) { let user=e.target.dataset.user; let select=document.querySelector(`select[data-user="${user}"]`); let newRole=select.value; if(newRole==='Owner' && getCurRole()!=='Owner'){ alert('Only Owner can assign Owner'); return;} let users=getUsers(); if(users[user].role==='Owner' && newRole!=='Owner' && Object.values(users).filter(u=>u.role==='Owner').length<=1){ alert('Must keep at least one Owner'); return;} users[user].role=newRole; saveUsers(users); renderUserTable(); refUI(); } else if(e.target.classList.contains('banBtn')) { let user=e.target.dataset.user; if(confirm(`Ban ${user}?`)){ banUser(user); if(getCur()===user) localStorage.removeItem('jamesCur'); renderUserTable(); refUI();}} else if(e.target.classList.contains('unbanBtn')) { unbanUser(e.target.dataset.user); renderUserTable(); refUI();}});
+        document.getElementById('createUserBtn').addEventListener('click', () => { let u=document.getElementById('usernameInput').value.trim(), p=document.getElementById('passwordInput').value; if(!u||!p) return document.getElementById('userMsg').textContent='Fill all fields.'; let us=getUsers(); if(us[u]) return document.getElementById('userMsg').textContent='User exists.'; us[u]={password:p,role:'User'}; saveUsers(us); document.getElementById('userMsg').textContent='Account created!'; });
+        document.getElementById('loginBtn').addEventListener('click', () => { let u=document.getElementById('usernameInput').value.trim(), p=document.getElementById('passwordInput').value; if(isBanned(u)) return document.getElementById('userMsg').textContent='Banned.'; let us=getUsers(); if(us[u]&&us[u].password===p){ localStorage.setItem('jamesCur',u); refUI(); document.getElementById('userMsg').textContent=''; } else document.getElementById('userMsg').textContent='Invalid credentials.'; });
         document.getElementById('logoutBtn').addEventListener('click', () => { localStorage.removeItem('jamesCur'); refUI(); });
         refUI();
     </script>
